@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Uso de Transformers</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Alfonso Tobar" />
+    <meta name="date" content="2020-09-23" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Uso de Transformers
+## en <code>Scikit-Learn</code>
+### Alfonso Tobar
+### 2020-09-23
+
+---
+
+
+
+
+
+
+
+# Un nuevo modelo: KNN
+
+KNN es el abreviado de K nearest neighbors y es uno de los modelos más sencillos, que está basado en distancias. En los problemas de Regresión mide la distancia a los `\(k\)` vecinos  más cercanos y su predicción se hace promediando sus valores.
+
+.left-column[
+
+&lt;img src="img/regresion.png" width="300%" /&gt;
+
+]
+
+.right-column[
+
+
+```python
+from sklearn.neighbors import KneighborsRegressor
+# n_neighbors es un hiperparámetro.
+# es el valor por defecto
+knn = KNeighborsRegressor(n_neighbors = 5)
+knn.fit(X,y)
+knn.score(X,y)
+```
+
+]
+
+---
+
+# Aplicando a datos
+
+#### Crear un modelo que prediga la edad de un pasajero utilizando Pclass, SibSp y Fare*1000.
+
+&gt; Nota: A modo de ejercicio aplicaremos el efecto de la Inflación (exagerada) dentro del Modelo.
+
+#### Calcular métricas de Train y de Test.
+
+---
+
+# Cómo mejorar el modelo?
+
+Muchas veces mejorar el modelo es complejo con la data que se tiene, por lo tanto es necesario, transformar los datos para poder utilizar data de mejor manera.
+
+Este proceso de transformación de datos se conoce como preprocesamiento y **NO HAY UNA FORMULA CORRECTA DE LLEVARLO A CABO**&lt;sup&gt;1&lt;/sup&gt;.
+
+Para realizar estos procesos de manera ordenada `scikit-learn` posee los transformers.
+
+
+```python
+from sklearn.submodule import Transformer
+tr = Transformer()
+tr.fit(X)
+tr.transform(X)
+```
+
+
+
+
+.footnote[[1]: Aunque hay formas que no son correctas de hacerlo para evitar **data leakage**]
+
+---
+
+# StandardScaler()
+
+Corresponde a la aplicación del Z-score en las variables de entrenamiento (`features`).
+
+Este proceso puede dividirse en dos:
+
+* Centrar: Restar la media
+* Escalar: Dividir por la desviación estándar
+
+&gt; NOTA: Ambas operaciones se aplican por defecto pero se pueden desactivar a través de parámetros. [Ver docs](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html)
+
+
+```python
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+sc.fit(X)
+sc.transform(X)
+sc.fit_transform(X)
+```
+
+&gt; NOTA: El resultado de esta operación es un Numpy Array.
+
+Escalar la data está recomendado cuando hay variables que contienen distintas escalas. En general modelos lineales como LR, KNN, SVM y NN se verán beneficiados.
+
+#### Escalar `mtcars`
+
+---
+
+# Data Leakage
+
+Data leakage se traduce como fuga de información y se refiere a una contaminación del proceso de modelamiento en la cual información de su Test set de alguna manera llega al proceso de entrenamiento.
+
+Esto es perjudicial ya que el modelo se entera de cómo es el Test durante su entrenamiento, por lo que genera inestabilidad al momento de generalizar.
+
+
+La manera más fácil de fugar información es a través del `StandardScaler()`.
+
+.center[
+
+&lt;img src="img/train_test.png" width="840" height="300" /&gt;
+
+]
+
+
+---
+
+# Con Fuga
+
+
+```python
+sc = StandardScaler()
+X_sc = sc.fit_transform(X)
+
+X_train,X_test,y_train,y_test = train_test_split(X_sc, y, test_size = 0.3, random_state = 123)
+
+
+knn = KNeighborsRegressor()
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+evaluation(y_test, y_pred)
+```
+
+&gt; `RMSE: 12.848766382620424`  
+&gt; `MAE: 3.2011839337500954`  
+&gt; `R2: 0.11099837200965901`  
+
+
+---
+
+# Sin Fuga
+
+
+```python
+X_train,X_test,y_train,y_test = train_test_split(X, y, test_size = 0.3, random_state = 123)
+
+sc = StandardScaler()
+X_train_sc = sc.fit_transform(X_train)
+X_test_sc = sc.transform(X_test)
+
+knn = KNeighborsRegressor()
+knn.fit(X_train_sc, y_train)
+y_pred = knn.predict(X_test_sc)
+
+evaluation(y_test, y_pred)
+```
+
+&gt; `RMSE: 12.834229356766496`  
+&gt; `MAE: 3.201102442614478`  
+&gt; `R2: 0.11300885745398226`  
+
+
+&gt; NOTA: **Nunca aplicar preprocesamiento antes del Data Split.**
+
+---
+
+# Cómo agregar variables categóricas?
+
+Las variables categóricas no son variables que los modelos procesan en primera instancia y normalmente deben pasar primero por un proceso de **encoding**&lt;sup&gt;2&lt;/sup&gt; .
+
+#### `Scikit-Learn` posee algunas funciones de enconding que se pueden encontrar en `sklearn.preprocessing`, pero existe una librería alternativa llamada category-encoders&lt;sup&gt;3&lt;/sup&gt; que será la que utilizaremos.
+
+* La principal ventaja de category-encoders es que devuelve pandas DataFrames lo cuales son más sencillos de trabajar, además de proveer soporte para encodings más avanzados no disponibles en `scikit-learn`.
+* También detecta automáticamente clases category y object las cuales son transformadas directamente.
+* Es posible escoger qué variables encodear además de lidiar automáticamente con variables no vistas durante el entrenamiento y missing values. [Ver docs](https://contrib.scikit-learn.org/category_encoders/)
+
+
+```python
+from category_encoders import OrdinalEncoder, OneHotEncoder # Opción recomendada
+from sklearn.preprocessing import OrdinalEncoding, OneHotEncoder # no tan recomendada
+```
+
+.footnote[
+[2]: Encoding se refiere al proceso de llevarlas a un código numérico que represente cada categoría.  
+[3]: category-encoders es parte de scikit-contrib, que son librerías complementarias recomendadas por el mismo `scikit-learn`.]
+
+---
+
+# OrdinalEncoder()
+
+Corresponde al encoder más sencillo en el cual cada categoría se le asigna un número entero.
+
+
+.pull-left[
+
+
+```python
+from category_encoders import OrdinalEncoder
+X = df.Embarked
+
+ord_enc = OrdinalEncoder()
+df_new = ord_enc.fit_transform(X)
+```
+
+&lt;img src="img/ordinal.png" width="343" height="300" /&gt;
+]
+
+.pull-right[
+
+* Sencilla
+* No agranda de tamaño el df de salida.
+* Se recomienda para variables ordinales.
+* Los modelos de árboles aprovechan de mejor manera este encoding.
+
+&lt;br&gt;
+&lt;br&gt;
+
+
+```python
+df_new.Embarked.value_counts()
+```
+
+&gt; `1    644`  
+&gt; `2    168`  
+&gt; `3     77`  
+&gt; `4      2`  
+
+Utilizando `.get_params()` es posible obtener de qué manera se hizo el mapeo de variables.
+
+]
+
+
+
+---
+
+# OneHotEncoder()
+
+Quizás corresponde al encoding más popular en el cual se transforma cada categoría en una columna binaria.
+
+.pull-left[
+
+
+```python
+X = df.Embarked
+# variables con nombres de categorías
+ord_enc = OneHotEncoder(use_cat_names = True)
+ord_enc.fit_transform(X)
+```
+
+
+&lt;img src="img/onehot.png" width="556" height="250" /&gt;
+
+]
+
+.pull-right[
+
+* Computacionalmene más complejo que OrdinalEncoder.
+* El df de salida es más grande que el de entrada.
+* No se recomienda para variables con un gran número de categorías.
+* En general entrega mejores resultados que el OrdinalEncoder.
+
+]
+
+
+---
+
+# Aplicando un Modelo
+
+#### Generar un Modelo para predecir la Edad de los pasajeros del Titanic utilizando 'Pclass','SibSp','Fare' y 'Embarked'.
+
+* Comparar el performance de KNN y de LinearRegression.
+* Compare los resultados obtenidos utilizando OrdinalEncoder y OneHotEncoder.
+* Mostrar resultados en train y test.
+
+--
+
+.pull-left[
+
+&gt; `KNN + OneHot, Test:`  
+&gt; `RMSE: 12.716024352894255`  
+&gt; `MAE: 3.1656873129387146`  
+&gt; `R2: 0.12927223594120496`  
+]
+
+.pull-right[
+
+&gt; `LR + OneHot, Test:`  
+&gt; `RMSE: 12.478825703086661`  
+&gt; `MAE: 3.103176867446452`  
+&gt; `R2: 0.16145354315592952`  
+
+]
+
+
+---
+
+# Simplificar Código: Pipelines
+
+Cómo se puede observar a medida que se utilizan más operaciones de preprocesamiento el código comienza a ponerse más complejo y propenso a error. Es por eso que `scikit-learn` introduce el concepto de `Pipeline`.
+
+El `Pipeline` permite el uso de varios estimators y transformers en orden, de tal manera de hacer el código más entendible.
+
+
+
+
+```python
+from sklearn.pipeline import Pipeline
+
+pipe = Pipeline(steps = [
+    ('ohe', OneHotEncoder()),
+    ('sc', StandardScaler()),
+    ('knn', KNeighborsRegressor())
+])
+
+pipe.fit(X_train, y_train)
+y_pred = pipe.predict(X_test)
+```
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
