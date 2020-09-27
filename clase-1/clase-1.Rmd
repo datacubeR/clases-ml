@@ -1,8 +1,8 @@
 ---
-title: "Introducción al Modelamiento"
-subtitle: "en `Scikit-Learn`"  
-author: "Alfonso Tobar"
-date: '`r Sys.Date()`'
+title: '<span id = "title-text">Introducción al Modelamiento<br> en `Scikit-Learn` </span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>21-09-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/slides](https://github.com/Rcubes/clases-ml/slides)'
+
 output:
   xaringan::moon_reader:
     lib_dir: libs

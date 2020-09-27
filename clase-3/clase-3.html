@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelos de Clasificación  en Scikit-Learn </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 28-09-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Modelos de Clasificación<br> en <code>Scikit-Learn</code> </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>28-09-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/slides">github.com/Rcubes/clases-ml/slides</a>
+
+---
+
+
+
+
+
+
+
+
+# Problemas de Clasificación
+
+Los procesos de Clasificación corresponden a una generalización de los problemas de regresión asociado a un Target Discreto/Categórico.
+
+Coloquemos el siguiente ejemplo donde: 
+
+`$$y = \begin{cases} 1, 
+&amp; \text{si es tumor maligno} \\
+0, &amp; \text{si es tumor benigno}
+\end{cases}$$`
+
+.center[
+
+&lt;img src="img/clasificacion.png" width="600" /&gt;
+
+]
+
+
+
+---
+
+# La Función Logística/Sigmoide
+
+.left[
+`$$g(z) = \frac{1}{1 + e^{-z}}$$`
+
+]
+
+
+.pull-left[
+
+
+
+&lt;img src="img/logistic.png" width="500" /&gt;
+]
+
+
+
+
+.pull-right[
+
+
+`$$y = \begin{cases} 1, 
+&amp; \text{si g(z) &gt; 0.5} \\
+0, &amp; \text{en otro caso}
+\end{cases}$$`
+
+&lt;br&gt;
+&lt;br&gt;
+
+&gt; Notar que para que g(z) sea mayor que 0.5, z debe ser mayor a 0.
+
+]
+
+
+---
+
+# La Regresión Logística
+
+Luego cuando la Recta de decisión es mayor que cero, la regresión Logística predecirá valores mayores a 0.5, y para valores bajo la recta de decisión predecirá valores menores a 0.5.
+
+
+.left-column[
+
+&lt;img src="img/clasificacion2.png" width="600" /&gt;
+
+]
+
+.right-column[
+
+&gt; NOTA: Dado que el recorrido de la función Sigmoide es entre 0 y 1, este valor puede ser interpretado como la probabilidad de pertenecer a una clase. 
+
+`$$P[y] = g( \sum_{i = 0}^p \beta_i X_i + \epsilon_i)$$`
+`$$y = \begin{cases} 1, 
+&amp; \text{si P[y] &gt; 0.5} \\
+0, &amp; \text{en otro caso}
+\end{cases}$$`
+
+
+```python
+from sklearn.linear_model import LogisticRegression
+lr = LogisticRegression(random_state = 123)
+lr.fit(X,y)
+lr.predict(X)
+lr.predict_proba(X)
+lr.score(X,y)
+```
+
+]
+
+
+
+---
+
+# KNN para Clasificación
+
+Adicionalmente también podríamos implementar un modelo KNN para clasificación:
+
+.left-column[
+
+&lt;img src="img/clasificacion2.png" width="600" /&gt;
+
+
+]
+
+.right-column[
+&lt;br&gt;
+&lt;br&gt;
+
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier()
+knn.fit(X,y)
+knn.predict(X)
+knn.predict_proba(X)
+knn.score(X,y)
+```
+
+
+]
+
+
+---
+
+# Ejemplo
+
+#### Implemente un modelo de Regresión Logistica y de KNN utilizando para predecir los sobrevivientes del Titanic, calculando su métrica de performance por defecto utilizando `.score()`.
+
+* Para ello utilice como variables predictoras `Pclass`, `Sex`, `Age`, `Parch`, `Fare` y `Embarked`.
+* Utilice un Encoder apropiado y escale las variables. 
+* Repita el proceso utilizando la arquitectura de Pipelines.
+
+---
+
+# Métricas de Clasificación
+
+Dentro de los problemas de clasificación existe una variedad gigante de métricas. Además dependiendo del área de estudio de estos problemas es que algunas se popularizan más que otras. Podríamos decir que existen las métricas que derivan de la matriz de Confusión y otras métricas,
+
+### Matriz de Confusión
+
+.pull-left[
+
+&lt;img src="img/conf_mat.jpeg" width="600" /&gt;
+
+]
+
+.pull-right[
+
+&gt; NOTA: **XK**: **K** representa el valor predicho, **X** si es correcto o no respecto al valor real.
+
+]
+
+---
+
+# Matriz de Confusión
+
+
+.left-column[
+
+## Ejemplo
+
+.center[
+
+&lt;img src="img/metrics.png" width="164" /&gt;
+
+]
+
+]
+
+.right-column[
+
+
+```python
+from scikitplot.metrics import plot_confusion_matrix
+plot_confusion_matrix(valores.y_real, valores.y_pred)
+```
+
+.center[
+
+&lt;img src="img/conf_mat_ex.png" width="421" /&gt;
+
+
+]
+
+
+
+  
+]
+
+---
+
+# Métricas Derivadas de la Matriz de Confusión
+
+### Accuracy
+
+`$$Accuracy = \frac{TN+TP}{TN+TP+FN+FP} = \frac{2+1}{2+1+3+2} = 0.375$$` 
+
+.left-column[
+
+&lt;img src="img/conf_mat_ex.png" width="421" /&gt;
+
+]
+
+.right-column[
+
+
+**Pros**: 
+* Métrica muy sencilla de entender. Se interpreta como los valores que han sido correctamente predichos.
+
+**Contra**: 
+* No muy útil para datasets desbalanceados ya que entrega falso optimismo.
+
+
+]
+
+
+
+---
+
+
+# Métricas Derivadas de la Matriz de Confusión
+
+### Precision-Recall
+
+.pull-left[
+
+`$$Precision = \frac{TP}{TP+FP} = \frac{1}{1+2} = 0.33$$`
+
+&lt;img src="img/conf_mat_ex.png" width="400" /&gt;
+
+]
+
+.pull-right[
+
+`$$Recall = \frac{TP}{TP+FN} = \frac{1}{1+3} = 0.25$$`
+
+### Interpretación
+
+* **Precision**: De todos los valores predichos en la clase k, cuántos de ellos fueron correctamente predichos?.
+
+* **Recall**: De todos los valores que realmente correspondían a la clase k, cuántos fueron correctamente predichos?
+
+
+]
+
+???
+
+
+**Precisión** es una buena medida cuando el costo de un falso positivo es alto. 
+Spam: Si un mail lo predigo como spam el usuario podría perder información valiosa de un correo que necesita leer.
+Walter White de Breaking Bad, le dijeron que moría y empezó a hacer metanfetaminas. Y qué costo.
+
+**Recall** es una buena medida cuando quiero evaluar el costo de un falso negativo.
+
+Detección de Fraude. Predecir que una transacción no es fraudulenta cuando en realidad lo es, puede resultar en un gran riesgo para el banco.
+Cancer. Predecir que un tumor no es maligno cuando en realidad lo es puede dar una falsa sensación de seguridad al paciente cuando en realidad está en riesgo vital.
+
+
+---
+# Métricas Derivadas de la Matriz de Confusión
+
+### F1
+
+Precision y Recall son intercambiables y dependen del orden de las clases a predecir. Adicionalmente Precision y recall son antagonistas. Mejorar una empeora la otra y viceversa. Por lo tanto a veces se requiere buscar un equilibrio entre ambas y eso es lo que entrega F1. F1 corresponde a la media armónica de Precision y Recall.
+
+`$$F1 = 2 \ cdot \frac{Precision \cdot Recall}{Precision + Recall} = 2\cdot \frac{0.33 \cdot 0.25}{0.33 + 0.25} = 0.284$$`
+
+
+&gt; NOTA: Es importante que dado que todas estas métricas dependen de la Matriz de Confusión pueden variar dependiendo del punto de corte escogido para seleccionar una predicción u otra (recordar que por defecto es 0.5).
+
+
+```python
+# permite mostrar un reporte con precision, recall, f1 y accuracy
+from sklearn.metrics import classification_report
+print(classification_report(y, y_pred, digits =2))
+```
+
+---
+
+# Curva de Precision-Recall
+
+Esta curva presenta el trade-off Precision-Recall de todos los puntos de corte. De esa manera se puede escoger el punto de corte que optimice la métrica que se quiere escoger o utilizar el área bajo la curva como una métrica de medida. 
+
+
+```python
+from scikitplot import plot_precision_recall
+plot_precision_recall(y, y_proba)
+```
+
+.pull-left[
+
+&lt;img src="img/precision-recall.png" width="400" /&gt;
+
+]
+
+.pull-right[
+
+&gt; NOTA: La utilización de esta curva es particularmente útil cuando se trabaja con clases desbalanceadas. Normalmente se utiliza el área bajo la curva (AUC) como una medida, donde 1 representa un modelo perfecto.
+
+]
+
+---
+# Receiver Operating Characteristic/ROC
+
+Esta curva representa el trade-off entre el recall (también llamado sensibilidad) y 1 - Especifidad, donde la Especifidad representa el Recall de la otra clase (para problemas binarios). Al igual que la curva representa este trade-off para todos los puntos de corte posible.
+
+Adicionalmente existe una interpretación alternativa, en la cual la curva ROC representa la probabilidad de que un punto de la clase positiva tenga una mayor probabilidad que un punto de la clase negativa. Es decir, la probabilidad de que el modelo pueda ordenar las predicciones correctamente por probabilidad.
+
+
+.pull-left[
+
+&lt;img src="img/roc.png" width="400" /&gt;
+
+]
+
+.pull-right[
+
+
+```python
+from scikitplot import plot_roc
+plot_roc(y, y_proba)
+```
+
+&gt; NOTA: Al igual que la curva Precision-Recall esta métrica esta curva se mide utilizando una métrica de AUC.
+
+]
+
+---
+
+# Curva de Ganancia
+
+La curva de Ganancia corresponde a una curva que mide qué porcentaje de la data es necesario para encontrar un cierto porcentaje de la clase requerida.
+
+
+```python
+from scikitplot import plot_cumulative_gain
+plot_cumulative_gain(y, y_proba)
+```
+.pull-left[
+
+&lt;img src="img/gain.png" width="450" /&gt;
+
+]
+
+.pull-right[
+
+&gt; NOTA: Esta métrica suele ser una métrica muy importante en marketing en donde se puede garantizar un cierto porcentaje de acierto si es que se contacta una cierta muestra con mayor probabilidad de la población a predecir.
+
+]
+
+
+---
+
+# Log-Loss
+
+Logloss (también llamada Crossentropy en NN) corresponde a una métrica que penaliza el incorrecto cálculo de las probabilidades. Penaliza de manera logarítmica la lejanía entre la clase predicha y la predicción perfecta.
+
+`$$LogLoss = -(y \cdot log(p) + (1-y) \cdot log(1-p))$$`
+&lt;br&gt;
+&lt;br&gt;
+
+
+```python
+from sklearn.metrics import log_loss
+log_loss(y, y_pred)
+```
+
+&gt; NOTA: Cuando lo más importante en el modelo es acertar lo mejor posible a la probabilidad entonces esta métrica puede ser de gran importancia ya que penaliza entre mayor incertidumbre probabilística exista.
+Esta métrica es comparativa y entre menos sea, menor será el error.
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

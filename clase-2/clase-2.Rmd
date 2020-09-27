@@ -1,8 +1,8 @@
 ---
-title: "Uso de Transformers"
-subtitle: "en `Scikit-Learn`"  
-author: "Alfonso Tobar"
-date: '`r Sys.Date()`'
+title: '<span id = "title-text">Uso de Transformers<br> en `Scikit-Learn` </span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>23-09-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/slides](https://github.com/Rcubes/clases-ml/slides)'
+
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -195,7 +195,6 @@ Las variables categóricas no son variables que los modelos procesan en primera 
 #### `Scikit-Learn` posee algunas funciones de enconding que se pueden encontrar en `sklearn.preprocessing`, pero existe una librería alternativa llamada category-encoders<sup>3</sup> que será la que utilizaremos.
 
 * La principal ventaja de category-encoders es que devuelve pandas DataFrames lo cuales son más sencillos de trabajar, además de proveer soporte para encodings más avanzados no disponibles en `scikit-learn`.
-* También detecta automáticamente clases category y object las cuales son transformadas directamente.
 * Es posible escoger qué variables encodear además de lidiar automáticamente con variables no vistas durante el entrenamiento y missing values. [Ver docs](https://contrib.scikit-learn.org/category_encoders/)
 
 ```{python, eval = FALSE}

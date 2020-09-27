@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Uso de Transformers</title>
+    <title>Uso de Transformers  en Scikit-Learn </title>
     <meta charset="utf-8" />
-    <meta name="author" content="Alfonso Tobar" />
-    <meta name="date" content="2020-09-23" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 23-09-2020 " />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Uso de Transformers
-## en <code>Scikit-Learn</code>
-### Alfonso Tobar
-### 2020-09-23
+# <span id="title-text">Uso de Transformers<br> en <code>Scikit-Learn</code> </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>23-09-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/slides">github.com/Rcubes/clases-ml/slides</a>
 
 ---
 
@@ -187,7 +186,6 @@ Las variables categóricas no son variables que los modelos procesan en primera 
 #### `Scikit-Learn` posee algunas funciones de enconding que se pueden encontrar en `sklearn.preprocessing`, pero existe una librería alternativa llamada category-encoders&lt;sup&gt;3&lt;/sup&gt; que será la que utilizaremos.
 
 * La principal ventaja de category-encoders es que devuelve pandas DataFrames lo cuales son más sencillos de trabajar, además de proveer soporte para encodings más avanzados no disponibles en `scikit-learn`.
-* También detecta automáticamente clases category y object las cuales son transformadas directamente.
 * Es posible escoger qué variables encodear además de lidiar automáticamente con variables no vistas durante el entrenamiento y missing values. [Ver docs](https://contrib.scikit-learn.org/category_encoders/)
 
 
