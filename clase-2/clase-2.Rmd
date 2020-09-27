@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Uso de Transformers<br> en `Scikit-Learn` </span>'
 author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>23-09-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/slides](https://github.com/Rcubes/clases-ml/slides)'
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
