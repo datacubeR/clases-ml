@@ -2,9 +2,29 @@
 
 El siguiente repo contiene el material que estoy utilizando para la realización de mis clases de Machine Learning en Scikit-Learn.
 
-* **/Slides**: Contiene todas las slides en PDF que actualmente estoy utilizando en mis clases.
-* **/notebooks**: Contiene el los notebooks con los que realizo cálculos de mis slides.
+* **/Slides**: Contiene todas las slides en PDF que actualmente estoy utilizando en mis clases. (WIP)
 * **clase-x**: Contiene todo el material para reproducir la clase, incluyendo imágenes, markdowns de Xaringan, .css de estilos y algunos íconos.
+
+* **/notebooks**: Contiene el los notebooks con los que realizo cálculos de mis slides además de algunos Notebook de ejemplos para clases adicionales que he dictado. Eventualmente se convertirán en clases formales.
+
+* Es posible encontrar ejemplos de Ejercicios de los siguientes modelos:
+  * GAM
+  * Decision Trees
+  * Naive Bayes (En Inglés)
+  * Gaussian Mixture
+  * Ensambles utilizando Bagging y Random Forest
+
+
+* Análisis de Dataset
+  * Juegos Olímpicos con Pandas
+  
+* Tutoriales de Visualización
+  * Matplotlib
+  * Seaborn
+
+
+
+
 
 <br>
 <br>
