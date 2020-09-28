@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Validación Cruzada  en Scikit-Learn </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 30-09-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Validación Cruzada<br> en <code>Scikit-Learn</code> </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>30-09-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+
+# Cómo Mejorar un Modelo (de nuevo?)
+
+.center[
+
+&lt;img src="img/model_complexity.png" width="600" /&gt;
+
+]
+
+
+Cuando se prueba un algoritmo no se trata de utilizar un modelo y **si dio bien lo dejamos y si no lo botamos**. Normalmente muchos modelos pueden ser afinados, modificando su complejidad. Esta complejidad se varía mediante los **hiperparámetros de un modelo**. Entender los **hiperámetros** de un modelo es complejo y es necesario entender otros conceptos como la Regularización.
+
+
+---
+# Problema
+
+El problema que esto suscita es: **¿cómo medimos el uso de distintos hiperparámetros (distintas complejidades) si para probar tenemos sólo el test set?** **Sería como hacer trampa**. Ya que sabemos que un modelo funciona mejor porque lo probamos en la data que me interesa, no porque de antemano sepamos que generaliza mejor (Sería como generar un overfit al test set).
+
+## Generar otro Split
+
+.center[
+
+&lt;img src="img/train_test_cv.png" width="600" /&gt;
+
+]
+
+---
+
+# Three Fold Split (Holdout)
+
+.pull-left[
+
+En el Three Fold Split el Dataset se divide en 3 partes:
+
+* **Training Set**: Utilizado para entrenar el modelo con distintos Hiperparámetros.
+* **Validation Set**: Utilizado para encontrar el mejor set de hiperparámetros.  
+* **Test Set**: Utilizado para la evaluación final del modelo.
+
+]
+
+.pull-right[
+
+.center[
+
+&lt;img src="img/holdout.png" width="200" /&gt;
+
+]
+
+]
+
+```python
+X_trainval, X_test, y_trainval, y_test = train_test_split(X,y, test_size = 0.2)
+X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_size = 0.2)
+```
+
+---
+
+# K-Fold Cross Validation
+
+.left-column[
+
+
+**Pros**: 
+* Mecanismo mucho más robusto para validar.
+* Todas las muestras se usan en entrenamiento k-1 veces y una vez de validación.
+
+**Contras**: 
+
+* Más costoso computacionalmente
+* Mayores tiempos de entrenamiento
+
+&gt; NOTA: Si bien el valor de K podría ser un parametro tuneable, K = 5 o 10 son los valores mayormente utilizados.
+
+]
+
+.right-column[
+
+&lt;img src="img/k-fold.png" width="600" /&gt;
+
+\* Imágen obtenida del sitio oficial de `Scikit-Learn`.
+
+]
+
+---
+
+## Esquema de Validación 
+
+.center[
+
+\* Esquema adaptado del sitio oficial de `Scikit-Learn`
+&lt;img src="img/cv-schema.png" width="700" /&gt;
+
+]
+
+&gt; NOTA: **Cross Validation** indica qué modelo usar mientras que el **evaluar en el Test Set** indica qué tan bueno es el modelo elegido.
+
+
+
+---
+
+# GridSearchCV / Implementación por Fuerza Bruta
+
+Los procedimientos anteriormente mostrados se encuentran completamente automatizados en `Scikit-Learn` a través de `GridSearchCV`.
+
+`GridSearchCV` es un meta-estimator, es decir, un Estimator que toma como argumento otro Estimator, por lo tanto hereda las propiedades del Estimator inicial tales como: `.fit()`, `.predict()`, etc.
+
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+params = {'n_neighbors': np.arange(1,17,2)}
+knn = KNeighborsClassifier()
+search = GridSearchCV(knn, params, cv = 5, return_train_score = True, n_jobs = -1)
+search.fit(X_train, y_train)
+
+# Resultados
+print('Mejor Cross Val Score (Mean)', search.best_score_) # en Cross Validation
+print('Mejor K:', search.best_params_)# Hiperparámetro óptimo
+
+print('Mejor Score en el Test Set:', search.score(X_test, y_test)) # en el modelo reentrenado
+```
+
+&gt; `Mejor Cross Val Score (Mean) 0.6769427755343249`  
+&gt; `Mejor K: {'n_neighbors': 7}`  
+&gt; `Mejor Score en el Test Set: 0.7039106145251397`  
+
+
+
+---
+
+# GridSearchCV / Implementación por Fuerza Bruta
+
+
+```python
+search.cv_results_
+```
+&lt;img src="img/cv_results.png" width="2305" /&gt;
+
+.pull-left[
+
+```python
+search
+```
+.center[
+
+&lt;img src="img/GCV.png" width="288" /&gt;
+
+]
+]
+
+.pull-right[
+
+```python
+search.best_estimator_
+```
+.center[
+
+&lt;img src="img/knn.png" width="469" /&gt;
+
+]
+]
+
+---
+
+## Otras metodologías de Cross Validation. 
+
+Todas estas metodologías pueden utilizarse en conjunto con GridSearchCV e la siguiente forma:
+
+
+```python
+from sklearn.model_selection import LeaveOneOut, ShuffleSplit 
+search = GridSearchCV(knn, param_grid = params, cv = LeaveOneOut(), n_jobs = -1)
+```
+
+* **Leave One Out**: # Deja una muestra cómo validación. Extremadamente lento, por lo que se recomienda sólo cuando hay muy poca data disponible.
+
+```python
+LeaveOneOut() 
+```
+
+* **ShuffleSplit**: También se conoce como MonteCarlo y genera nuevas muestras sintéticas. Estas muestran permiten que haya repetición.
+
+```python
+ShuffleSplit(n_splits = 5) 
+```
+---
+
+# GridSearchCV / Implementación por Fuerza Bruta
+
+* **RepeatedKFold**: Corresponde a un procedimiento que se repite N veces. Entre cada repetición la data se revuelve aleatoriamente. Es uno de los procedimientos más robustos.
+
+
+```python
+from sklearn.model_selection import RepeatedKFold, RepeatedStratifiedKFold
+RepeatedKFold(n_splits = 5, n_repeats = 10)
+RepeatedStratifiedKFold(n_splits = 5, n_repeats = 10)
+```
+* **TimeSeriesSplit**: Corresponde a un procedimiento divide data, tal que siempre se entrene con el pasado y se prediga/evalúe en el futuro.
+
+
+```python
+from sklearn.model_selection import TimeSeriesSplit
+TimeSeriesSplit(n_splits = 5)
+```
+
+* Para más información de todos los tipos de CV existentes [Ver docs](https://scikit-learn.org/stable/modules/cross_validation.html)
+
+---
+
+# RandomizedSearchCV
+
+`RandomizedSearchCV()` es otro meta-estimator que permite generar una búsqueda de hiperparámetros de manera randomizada. Es decir, en vez de realizar cada combinación de hiperparámetros aleatoriamente elige un número dado.
+
+**Pros**: Mucho más rápido que GridSearchCV, además uno sabe a priori cuantos modelosentrenará y aproximadamente cuánto tiempo demorará.
+
+**Contra**: No es exhaustiva y podría no encontrar el valor óptimo.
+
+
+```python
+from sklearn.model_selection import RandomizedSearchCV
+RandomizedSearchCV(knn, params, n_iter = 10, random_state = 123, n_jobs = -1, cv = 5)
+```
+
+&gt; Existe otro tipo de optimización llamada `Optimización Bayesiana`, la cual elige el siguiente set de hiperparámetros a probar dependiendo de los resultados de la iteración anterior. Para aprender más al respecto ver [acá](https://scikit-optimize.github.io/stable/).
+
+---
+
+# Scoring
+
+El CV tiene como objetivo último el entregar el mejor de set de hiperparámetros que entreguen el mejor modelo. Pero ¿qué significa el **MEJOR MODELO**?. El **MEJOR MODELO** depende de la métrica que escojamos, por ende, es un parámetro que deberíamos utilizar en Grid/RandomizedSearch.
+
+El parámetro **scoring** es un string que indicará al CV bajo qué criterio encontrar el mejor modelo.
+
+.pull-left[
+
+&lt;img src="img/classification_score.png" width="400" /&gt;
+
+
+]
+
+.pull-right[
+&lt;img src="img/regression_score.png" width="400" /&gt;
+
+\* Valores sacados de la página oficial de `Scikit-learn`. Para más información entrar [acá](https://scikit-learn.org/stable/modules/model_evaluation.html).
+
+]
+
+---
+
+# Tarea
+
+* Utilizar KNN para resolver un problema de Regresión utilizando el dataset Diabetes. 
+
+  * Encontrar el número del K óptimo utilizando las siguientes metodologías:
+    * Holdout
+    * KFold
+    * ShuffleSplit
+    * RepeatedKFold
+
+* Utilizar KNN para resolver un problema de Clasificación utilizando el dataset Iris. 
+
+  * Encontrar el número del K óptimo utilizando las siguientes metodologías:
+    * Holdout
+    * StratifiedKFold
+    * ShuffleSplit
+    * RepeatedStratifiedKFold
+
+* Pruebe sólo `25 iteraciones` utilizando RandomizedSearchCV con k desde 1 a 100. Utilice `random_state = 123`.
+* Para los parámetros `n_splits` y `n_repeats` utilice el valor de 5.
+* En el caso de los holdouts realice una busqueda de vecinos del 1 al 25.
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
