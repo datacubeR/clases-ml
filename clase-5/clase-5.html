@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Reducción de Dimensionalidad  en Scikit-Learn </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 05-10-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Reducción de Dimensionalidad<br> en <code>Scikit-Learn</code> </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>05-10-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+
+# La maldición de la Dimensionalidad
+
+.pull-left[
+
+El proceso de Modelamiento suele ser un proceso tedioso de mucho costo computacional. En estricto rigor un modelo entre más data para aprender tenga mucho mejor desempeño tendrá. El problema de eso es que eso conlleva un costo.
+
+&gt; Por lo tanto, se hace necesario tratar de reducir en lo posible el tamaño de mi procesamiento afectando el modelo lo menos posible.
+
+]
+
+.pull-right[
+
+&lt;img src="https://media.giphy.com/media/MCZ39lz83o5lC/giphy.gif" width="600" /&gt;
+
+]
+
+### Soluciones: 
+* **Factor Analysis**
+* **PCA y amigos**
+* **Variable Selection**
+
+---
+# Análisis Factorial (Factores Latentes)
+
+.pull-left[
+
+Una primera solución es el Análisis Factorial. Este análisis se basa en la hipótesis de que descomponiendo la matriz de atributos en factores latentes que agrupan/resumen las variables originales. Está fuertemente orientado a la interpretabilidad.
+
+La implmentación en Python es simple:
+
+
+```python
+from factor_analyzer import FactorAnalyzer
+fa = FactorAnalyzer(n_factors = 2)
+fa.fit(X)
+fa.transform(X)
+```
+
+pero existen algunas condiciones que deben verificarse antes:
+
+
+]
+
+.pull-right[
+
+&lt;img src="img/AF.PNG" width="600" /&gt;
+
+
+]
+
+
+
+---
+
+# Análisis Factorial (Factores Latentes)
+
+#### Condiciones
+
+* **Test de Esfericidad de Bartlett**: Corresponde a un test que mide las siguientes Hipótesis:
+
+  * `\(H_0\)`: La matriz de correlaciones es igual a la matriz Identidad
+  * `\(H_1\)` La matriz de corelaciones no es igual a la matriz Identidad
+  
+
+```python
+chi_square_value,p_value=calculate_bartlett_sphericity(X)
+p_value # Chequear que p-value sea menor que 0.05
+```
+* **Criterio de Kaiser-Meyer-Olkin**: Representa el grado en el que cada variable observada es predicha sin error, mediante el uso del resto del dataset. KMO debe ser mayor a 0.6.
+
+
+```python
+from factor_analyzer.factor_analyzer import calculate_kmo
+kmo_all,kmo_model=calculate_kmo(X)
+print(kmo_model) # corresponde al valor total del modelo
+print(kmo_all) # corresponde al kmo por variable
+```
+.footnote[
+
+Fuente: Docs [`factor_amalizer`](https://factor-analyzer.readthedocs.io/en/latest/factor_analyzer.html#factor-analyzer-analyze-module)
+]
+
+---
+
+# Análisis Factorial (Factores Latentes)
+
+#### Factores Latentes Óptimos
+
+Para encontrar el número óptimo se realiza un análisis de los valores propios del problema de descomposición. Se suelen utilizar los valores propios mayores a 1 ya que eso representa la cantidad de variables a las que puede explicar su varianza.
+
+.center[
+
+&lt;img src="img/skree.PNG" width="493" /&gt;
+]
+
+???
+
+Un valor propio de 2.5 significa que el factor es capaz de explicar la varianza de 2.5 variables.
+---
+
+# Principal Component Analysis
+
+Quizás es el procedimiento más conocido y más poderoso en cuanto a Reducción de Dimensionalidad. El PCA tiene como objetivo principal descomponer un set de variables en componentes ortogonales que expliquen la mayor cantidad de varianza.
+
+&gt; NOTA: El resultado de este análisis es un nuevo dataset, en que las columnas resultantes corresponden a las componentes principales.
+
+.pull-left[
+**Pro**: Es un Transformer no supervisado.
+
+**Contra**: Las componentes principales resultantes no son interpretables.
+]
+.pull-right[
+
+&lt;img src="img/pca.png" width="293" /&gt;
+]
+
+
+
+---
+
+# Principal Component Analysis
+
+
+```python
+from sklearn.decomposition import PCA
+pca = PCA(n_components = None)
+pca.fit(X)
+pca.transform(X)
+pca.fit_transform(X)
+```
+Hiperparámetro:
+* **n_components**: Por defecto es `None` que significa utilizar el mismo número de columnas de entrada. Este hiperparámetro puede ser un número para indicar el número de componentes principales a reducir o un valor entre 0 y 1 para indicar las componentes principales que indiquen dicho porcentaje de varianza.
+
+* `pca.explained_variance_ratio_` entrega el porcentaje de varianza que explica cada componente principal.
+
+---
+
+# Aplicación en Visualizaciones
+
+Muchas veces los datasets que se manejan tienen tantas dimensiones que no es posible visualizarlos en las dimensiones que como humanos podemos interpretar. Es por esto que reduciendo por ejemplo a 2 dimensiones podemos fácilmente ver cómo se separan datasets famosos como el iris.
+
+.left-column[
+
+
+```python
+from sklearn.datasets import load_iris
+
+data = load_iris(as_frame = True)
+X = data.data
+y = data.target
+pca = PCA(n_components = 2)
+X_red = pca.fit_transform(X)
+y_red = y.astype('category').cat.codes
+
+plt.scatter(X_red[:,0], X_red[:,1], c = y_red)
+plt.show()
+```
+
+
+]
+
+.right-column[
+
+&lt;img src="img/iris.PNG" width="507" /&gt;
+
+]
+
+---
+
+# Selección de Variables en `Scikit-Learn`
+
+ La API de `scikit-learn` contempla los siguientes Transformers para la selección de variables.
+
+
+```python
+# Selecciona las `k` mejores variables donde `k` es un número entero.
+SelectKBest(score, k = 10)
+# Selecciona las variables con tal de tener un `percentile` % resultante.
+SelectPercentile(score, percentile)
+# Utiliza un modelo para dejar las variables que sobrepasen un cierto treshold.
+SelectFromModel(estimator, threshold = None)
+# Utiliza un modelo para eliminar variables de manera recursiva hasta llegar al valor deseado.
+RFE(estimator, n_features_to_select = None)
+```
+
+
+#### Scoring
+
+* **f_regression, f_classif:** Realizan un análisis de varianza (ANOVA) para escoger las variables más significativas.
+* **mutual_info_regression, mutual_info_classif:** Realiza un  análisis de información Mutua para determinar independencia entre cada uno de los predictores y el target. 0 implica independencia y entre mayor sea el número implica mayor relación de dependencia.
+* **chi2 (Sólo Clasificación)**: Este test mide el grado de independencia, pero sólo funciona para variables positivas y en general Booleanos y Conteos.
+
+---
+
+# Selección de Variables en `Scikit-Learn`
+
+&gt; NOTA: Normalmente estos Procedimientos de selección de variable pueden introducir Data Leakage por lo para buscar el k, percentiles óptimo, debieran ser usados dentro de un contexto de Pipeline + GridSearch.
+
+### Ejemplo de Uso (Sin GridSearch)
+
+
+```python
+from sklearn.feature_selection import f_regression, SelectPercentile
+
+pipe = Pipeline(steps = [
+    ('vs', SelectPercentile(f_regression, percentile = 70)),
+    ('lr', LinearRegression())
+])
+
+pipe.fit(X_train, y_train)
+pipe.score(X_test, y_test)
+```
+
+---
+
+
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

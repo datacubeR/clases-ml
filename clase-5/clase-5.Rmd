@@ -1,0 +1,273 @@
+---
+title: '<span id = "title-text">Reducción de Dimensionalidad<br> en `Scikit-Learn` </span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>05-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+
+
+
+```
+
+# La maldición de la Dimensionalidad
+
+.pull-left[
+
+El proceso de Modelamiento suele ser un proceso tedioso de mucho costo computacional. En estricto rigor un modelo entre más data para aprender tenga mucho mejor desempeño tendrá. El problema de eso es que eso conlleva un costo.
+
+> Por lo tanto, se hace necesario tratar de reducir en lo posible el tamaño de mi procesamiento afectando el modelo lo menos posible.
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width = 600}
+knitr::include_graphics("https://media.giphy.com/media/MCZ39lz83o5lC/giphy.gif")
+```
+
+]
+
+### Soluciones: 
+* **Factor Analysis**
+* **PCA y amigos**
+* **Variable Selection**
+
+---
+# Análisis Factorial (Factores Latentes)
+
+.pull-left[
+
+Una primera solución es el Análisis Factorial. Este análisis se basa en la hipótesis de que descomponiendo la matriz de atributos en factores latentes que agrupan/resumen las variables originales. Está fuertemente orientado a la interpretabilidad.
+
+La implmentación en Python es simple:
+
+```{python, eval = FALSE}
+from factor_analyzer import FactorAnalyzer
+fa = FactorAnalyzer(n_factors = 2)
+fa.fit(X)
+fa.transform(X)
+```
+
+pero existen algunas condiciones que deben verificarse antes:
+
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE, out.width = 600}
+knitr::include_graphics("img/AF.PNG")
+```
+
+
+]
+
+
+
+---
+
+# Análisis Factorial (Factores Latentes)
+
+#### Condiciones
+
+* **Test de Esfericidad de Bartlett**: Corresponde a un test que mide las siguientes Hipótesis:
+
+  * $H_0$: La matriz de correlaciones es igual a la matriz Identidad
+  * $H_1$ La matriz de corelaciones no es igual a la matriz Identidad
+  
+```{python,eval = FALSE}
+chi_square_value,p_value=calculate_bartlett_sphericity(X)
+p_value # Chequear que p-value sea menor que 0.05
+```
+* **Criterio de Kaiser-Meyer-Olkin**: Representa el grado en el que cada variable observada es predicha sin error, mediante el uso del resto del dataset. KMO debe ser mayor a 0.6.
+
+```{python, eval = FALSE}
+from factor_analyzer.factor_analyzer import calculate_kmo
+kmo_all,kmo_model=calculate_kmo(X)
+print(kmo_model) # corresponde al valor total del modelo
+print(kmo_all) # corresponde al kmo por variable
+```
+.footnote[
+
+Fuente: Docs [`factor_amalizer`](https://factor-analyzer.readthedocs.io/en/latest/factor_analyzer.html#factor-analyzer-analyze-module)
+]
+
+---
+
+# Análisis Factorial (Factores Latentes)
+
+#### Factores Latentes Óptimos
+
+Para encontrar el número óptimo se realiza un análisis de los valores propios del problema de descomposición. Se suelen utilizar los valores propios mayores a 1 ya que eso representa la cantidad de variables a las que puede explicar su varianza.
+
+.center[
+
+```{r, echo = FALSE}
+knitr::include_graphics("img/skree.PNG")
+```
+]
+
+???
+
+Un valor propio de 2.5 significa que el factor es capaz de explicar la varianza de 2.5 variables.
+---
+
+# Principal Component Analysis
+
+Quizás es el procedimiento más conocido y más poderoso en cuanto a Reducción de Dimensionalidad. El PCA tiene como objetivo principal descomponer un set de variables en componentes ortogonales que expliquen la mayor cantidad de varianza.
+
+> NOTA: El resultado de este análisis es un nuevo dataset, en que las columnas resultantes corresponden a las componentes principales.
+
+.pull-left[
+**Pro**: Es un Transformer no supervisado.
+
+**Contra**: Las componentes principales resultantes no son interpretables.
+]
+.pull-right[
+
+```{r, echo = FALSE}
+knitr::include_graphics("img/pca.png")
+```
+]
+
+
+
+---
+
+# Principal Component Analysis
+
+```{python, eval = FALSE}
+from sklearn.decomposition import PCA
+pca = PCA(n_components = None)
+pca.fit(X)
+pca.transform(X)
+pca.fit_transform(X)
+```
+Hiperparámetro:
+* **n_components**: Por defecto es `None` que significa utilizar el mismo número de columnas de entrada. Este hiperparámetro puede ser un número para indicar el número de componentes principales a reducir o un valor entre 0 y 1 para indicar las componentes principales que indiquen dicho porcentaje de varianza.
+
+* `pca.explained_variance_ratio_` entrega el porcentaje de varianza que explica cada componente principal.
+
+---
+
+# Aplicación en Visualizaciones
+
+Muchas veces los datasets que se manejan tienen tantas dimensiones que no es posible visualizarlos en las dimensiones que como humanos podemos interpretar. Es por esto que reduciendo por ejemplo a 2 dimensiones podemos fácilmente ver cómo se separan datasets famosos como el iris.
+
+.left-column[
+
+```{python, eval = FALSE}
+
+from sklearn.datasets import load_iris
+
+data = load_iris(as_frame = True)
+X = data.data
+y = data.target
+pca = PCA(n_components = 2)
+X_red = pca.fit_transform(X)
+y_red = y.astype('category').cat.codes
+
+plt.scatter(X_red[:,0], X_red[:,1], c = y_red)
+plt.show()
+
+```
+
+
+]
+
+.right-column[
+
+```{r, echo = FALSE}
+knitr::include_graphics("img/iris.PNG")
+```
+
+]
+
+---
+
+# Selección de Variables en `Scikit-Learn`
+
+ La API de `scikit-learn` contempla los siguientes Transformers para la selección de variables.
+
+```{python, eval = FALSE}
+# Selecciona las `k` mejores variables donde `k` es un número entero.
+SelectKBest(score, k = 10)
+# Selecciona las variables con tal de tener un `percentile` % resultante.
+SelectPercentile(score, percentile)
+# Utiliza un modelo para dejar las variables que sobrepasen un cierto treshold.
+SelectFromModel(estimator, threshold = None)
+# Utiliza un modelo para eliminar variables de manera recursiva hasta llegar al valor deseado.
+RFE(estimator, n_features_to_select = None)
+```
+
+
+#### Scoring
+
+* **f_regression, f_classif:** Realizan un análisis de varianza (ANOVA) para escoger las variables más significativas.
+* **mutual_info_regression, mutual_info_classif:** Realiza un  análisis de información Mutua para determinar independencia entre cada uno de los predictores y el target. 0 implica independencia y entre mayor sea el número implica mayor relación de dependencia.
+* **chi2 (Sólo Clasificación)**: Este test mide el grado de independencia, pero sólo funciona para variables positivas y en general Booleanos y Conteos.
+
+---
+
+# Selección de Variables en `Scikit-Learn`
+
+> NOTA: Normalmente estos Procedimientos de selección de variable pueden introducir Data Leakage por lo para buscar el k, percentiles óptimo, debieran ser usados dentro de un contexto de Pipeline + GridSearch.
+
+### Ejemplo de Uso (Sin GridSearch)
+
+```{python, eval = FALSE}
+
+from sklearn.feature_selection import f_regression, SelectPercentile
+
+pipe = Pipeline(steps = [
+    ('vs', SelectPercentile(f_regression, percentile = 70)),
+    ('lr', LinearRegression())
+])
+
+pipe.fit(X_train, y_train)
+pipe.score(X_test, y_test)
+```
+
+---
+
+
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+

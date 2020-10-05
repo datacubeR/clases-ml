@@ -33,7 +33,7 @@ class: center, middle, inverse, title-slide
 ]
 
 
-Cuando se prueba un algoritmo no se trata de utilizar un modelo y **si dio bien lo dejamos y si no lo botamos**. Normalmente muchos modelos pueden ser afinados, modificando su complejidad. Esta complejidad se varía mediante los **hiperparámetros de un modelo**. Entender los **hiperámetros** de un modelo es complejo y es necesario entender otros conceptos como la Regularización.
+Cuando se prueba un algoritmo no se trata de utilizar un modelo y **si dio bien lo dejamos y si no lo botamos**. Normalmente muchos modelos pueden ser afinados, modificando su complejidad. Esta complejidad se varía mediante los **hiperparámetros de un modelo**. Entender los **hiperpárametros** de un modelo es complejo y es necesario entender otros conceptos como la Regularización.
 
 
 ---
@@ -197,7 +197,7 @@ from sklearn.model_selection import LeaveOneOut, ShuffleSplit
 search = GridSearchCV(knn, param_grid = params, cv = LeaveOneOut(), n_jobs = -1)
 ```
 
-* **Leave One Out**: # Deja una muestra cómo validación. Extremadamente lento, por lo que se recomienda sólo cuando hay muy poca data disponible.
+* **Leave One Out**: Deja una muestra cómo validación. Extremadamente lento, por lo que se recomienda sólo cuando hay muy poca data disponible.
 
 ```python
 LeaveOneOut() 
@@ -294,6 +294,15 @@ El parámetro **scoring** es un string que indicará al CV bajo qué criterio en
 * Para los parámetros `n_splits` y `n_repeats` utilice el valor de 5.
 * En el caso de los holdouts realice una busqueda de vecinos del 1 al 25.
 
+---
+
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
