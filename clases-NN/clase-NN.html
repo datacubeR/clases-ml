@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Redes Neuronales  Teoría </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 06-10-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Redes Neuronales<br> Teoría </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>06-10-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+# Qué son las Redes Neuronales?
+
+Las redes neuronales son una manera gráfica de mostrar un proceso de modelamiento iterativo.
+
+
+.left-column[
+
+## Regresión Lineal
+
+&lt;img src="img/reg_lineal.PNG" width="600" /&gt;
+
+Cuando se trata de Redes Neuronales hay algunos terminos que van a cambiar. 
+
+* Cada de los Circulos será una Neurona y albelgarán un número en su interior. 
+* Cada una de las uniones (Edges) contenerán entonces los valores de `\(\beta\)` que de ahora en adelante se llamarán pesos. 
+
+NOTA: Esta configuración es lo que se le denomina un **Perceptrón**.
+
+]
+
+.right-column[
+
+&lt;img src="img/reg_lineal_grafo.PNG" width="272" /&gt;
+
+]
+
+
+---
+
+# Qué son las Redes Neuronales?
+
+### Regresión Logística
+
+.pull-left[
+
+&lt;img src="img/reg_log_grafo.PNG" width="370" /&gt;
+
+]
+
+.pull-right[
+ 
+En el caso de la Regresión Logística la idea es la misma. Con la sutil diferncia que se aplica una función `\(h(x)\)` la cual es la Función Logística (Sigmoide, Logit).
+
+`$$h(z) = \frac{1}{1 + e^{-z}}$$`
+
+Esta función le da a la regresión Lineal la versatilidad de ahora poder lidiar con problemas de clasificación. En redes neuronales, una función que permita dar versatilidad, en especial de entregar la capacidad de encontrar valores no lineales se le llama función de activación.
+
+
+
+]
+
+---
+
+# Problema XOR
+
+.center[
+
+&lt;img src="img/xor.PNG" width="60%" /&gt;
+
+
+]
+
+---
+
+# Utilizando una Red Neuronal para resolver XOR
+
+.center[
+
+&lt;img src="img/NN_xor.PNG" width="70%" /&gt;
+
+
+]
+
+
+
+
+---
+
+# Implementando la solución en Numpy
+
+.pull-left[
+
+### Función de Activación
+
+`$$\sigma(x) = \frac{1}{1 + e^{-x}}$$`
+.pull-left[
+
+* **W11:** 20
+
+* **W12:** -20
+
+* **W21:** 20
+
+* **W22:** -20
+
+]
+
+.pull-right[
+
+* **Ws1:** 20
+
+* **Ws2:** 20
+
+* **B1:** -10
+
+* **B2:** 30
+
+* **B3:** 30
+
+]
+
+]
+
+--
+
+.pull-right[
+
+
+&gt; **NOTA**: Notar que estamos resolviendo un problema no-lineal, utiizando 3 modelos lineales. 
+
+.pull-left[
+
+&lt;img src="https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif" width="80%" /&gt;
+]
+
+.pull.right[
+&lt;img src="https://media.giphy.com/media/doJrCO8kCAgNy/giphy.gif" width="50%" /&gt;
+
+
+]
+
+]
+
+---
+
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Estas clases&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
+
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
