@@ -1,0 +1,126 @@
+---
+title: '<span id = "title-text">Redes Neuronales<br> Aprendizaje</span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>06-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+
+```
+
+
+
+
+# Utilizando una Red Neuronal para Regresión
+
+.center[
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/NN_reg.PNG")
+```
+
+
+]
+
+**Valor Real**: 13 para X1 = 2 y X3 = 3
+
+---
+
+# Función de Costo (Loss Function)
+
+```{r, echo = FALSE, out.width='30%'}
+knitr::include_graphics("img/mse.PNG")
+```
+
+Corresponde a la cuantificación del error. Este error es el encargado decirle a la red si debe seguir aprendiendo o ya ha sido entrenada. Si esta función de Costo es 0, entonces el modelo es perfecto. En cualquier otro caso, debe seguir aprendiendo.
+
+Si es que el proceso de entrenamiento no termina (no se ha alcanzado el modelo óptimo), entonces el modelo debe comenzar el proceso de backpropagation.
+
+$$W_{j} = W_j - \alpha \cdot \frac{\partial}{\partial W_j}J(W_j)$$
+
+---
+
+# Backpropagation
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/NN_reg.PNG")
+```
+
+---
+
+# Funciones de Activación
+
+.pull-left[
+
+.center[
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/identity.png")
+```
+
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/sigmoide.png")
+```
+
+
+]
+
+]
+
+.pull-right[
+
+.center[
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/tanh.png")
+```
+
+
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/relu.png")
+```
+]
+
+]
+
+
+---
+
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Estas clases</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+
+

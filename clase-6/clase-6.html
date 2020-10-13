@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Pipelines  en Scikit-Learn </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 05-10-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Pipelines<br> en <code>Scikit-Learn</code> </span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>05-10-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+
+# Pipelines
+
+Trabajar con modelos de Machine Learning muchas veces requiere la combinación de muchos pasos que sean reproducibles tanto para el proceso de Entrenamiento como de Testeo/Validación. Es por eso que se necesita de una estructura robusta que soporte esto de manera estable.
+
+
+.center[
+&lt;img src="img/pipeline.PNG" width="60%" /&gt;
+
+]
+
+---
+
+# Pipelines
+
+
+```python
+from sklearn.pipeline import Pipeline
+from category_encoders import OneHotEncoder
+from sklearn.feature_selection import SelectPercentile, mutual_info_classif
+from sklearn.model_selection import LogisticRegression
+
+
+
+pipe = Pipeline(steps = [
+  ('ohe', OneHotEncoder(use_cat_names = True))
+  ('vs', SelectPercentile(mutual_info_clasif, percentile = 70)),
+  ('lr', LogisticRegression(random_state = 123))
+])
+
+pipe.fit(X_train, y_train)
+```
+
+&gt; NOTA: `pipe` ahora es un modelo, pero de muchas etapas. Esta es la manera correcta de trabajar en `scikit-learn` cuando se está en el proceso de entrenamiento/experimentación de un modelo.
+Todos los pasos pueden ser `Transformers`, pero sólo el último paso puede ser un `Estimator`.
+
+---
+
+# Tratamiento de Nulos
+
+Normalmente existen dos tipos de Nulos, los informativos y los MAR (missing at Random). Los informativos pueden ser útiles y quizás se pueden utilizar como una variable nueva. En cambio los valores MAR son por errores de proceso, no disponibilidad de información, etc.
+
+Una estrategia simple en `scikit-learn` es utilizar `SimpleImputer()`:
+
+
+```python
+from sklearn.imputer import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import LinerRegression
+
+num = Pipeline(steps = [
+  ('imp_num', SimpleImputer(strategy = 'mean')),
+  ('sc', StandardScaler()),
+  ('lr', LinearRegression())
+])
+```
+
+* strategy: Corresponde a la estrategia de imputación numérica disponible:
+   * **'mean'**: Rellena con la media de cada columna.
+   * **'median'**: Rellena con la mediana de cada columna.
+   * **'most_frequent'**: Rellena con el valor más frecuenta. Normalmente utilizado con categorías.
+   * **'constant'**: Reemplaza con un valor dado. Se debe agregar el parámetro adicional 'fill_value' con el valor a rellenar.
+   
+---
+
+# Tratamiento de Nulos en Categorías
+
+* La librería `category_encoders` es capaz de lidiar con variables nulos. Normalmente crear estrategias que le permitan manejar los valores nulos de manera autónoma.
+
+* Además le permite lidiar con categorías no vistas durante el entrenamiento
+
+* Puede crear categorías nuevas para los valores nulos.
+
+* Podría no necesitar un proceso de Imputer ya que la librería se encarga.
+
+
+```python
+cat = Pipeline(steps = [
+  ('ohe', OneHotEncoder(use_cat_names = True))
+  ('lr', LinearRegression())
+])
+```
+
+---
+
+# Y qué pasa si quiero tratar categorías y números de manera distinta?
+
+Existe el `ColumnTransformer()` que es un meta-estimator que ayuda a realizar procedimiento diferenciado a distintos sets de variables.
+
+
+```python
+from sklearn.compose import ColumnTransformer
+prep = ColumnTransformer(trasformers = [
+  ('cont', num_pipeline, var_num),
+  ('cat', cat_pipeline, var_cat)
+])
+```
+
+.center[
+
+&lt;img src="img/column_transformer.PNG" width="60%" /&gt;
+
+]
+
+
+
+
+---
+
+# Manipulando Pipelines
+
+## Accediendo a valores Internos.
+
+Cuando queremos recuperar atributos de etapas intermedias de un Pipeline necesitamos acceder a él utilizando `.named_steps.etapa_del_pipeline`. Donde `etapa_del_pipeline` es el nombre que nosotros asignamos a las distintas etapas de un Pipeline. Estas propiedades están disponibles sólo después de **fitear** el modelo.
+
+
+```python
+num = Pipeline(steps = [
+  ('imp_num', SimpleImputer(strategy = 'mean')),
+  ('sc', StandardScaler()),
+  ('lr', LinearRegression())
+])
+
+# permite llamar los coeficientes que entrega
+# una lr dentro de un pipeline.
+num.named_steps.lr.coef_ 
+```
+
+&gt; NOTA: Cuando queremos ingresar a una etapa de un ColumnTransformer se debe utilizar `.named_transformers_`.
+
+---
+
+# Manipulando Pipelines
+
+## Qué pasa con el GridSearch?
+
+La convención de `Scikit-Learn` para acceder hiperparámetros de un Pipeline es utilizando el nombre de la etapa y luego un doble underscore para el nombre del hipeparámetro.
+
+Adicionalmente existe el comando `'passthrough'` que permite saltarse la etapa. 
+
+&gt; NOTA: Usar con cuidado ya que puede fallar si me salto una etapa que tiene hiperparámetros en búsqueda.
+
+
+```python
+num = Pipeline(steps = [
+  ('imp_num', SimpleImputer(strategy = 'mean')),
+  ('sc', StandardScaler()),
+  ('lr', LinearRegression())
+])
+
+params = {'imp_num__strategy': ['mean', 'median'], # prueba dos estrategias de imputación
+          'sc': ['passthrough', StandardScaler()]} # va a probar con y sin estandarización
+          
+GridSearchCV(num, params, cv = 5, scoring = 'accuracy', n_jobs = -1)
+```
+
+---
+
+
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
