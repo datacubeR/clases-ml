@@ -1,0 +1,107 @@
+---
+title: '<span id = "title-text">Modelos Lineares Generalizados<br></span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>19-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+
+
+
+```
+
+# Modelos Lineales
+
+$$f(X) = \sum_{i = 0}^p \beta_i X_i + \epsilon_i,\, p: \text{ Número de Features}$$
+De acá se sabe que la regresión Lineal debe cumplir con las siguiente características:
+
+* $\epsilon_i$ deben ser independientes (no correlacionados)
+* $y \sim N(0, \sigma^2)$.
+
+
+
+> NOTA: De esta condición se desprende que $y = f(X)$ debería ser una variable aleatoria normal. Dado que la única componente aleatoria de la regresión es el error. En la realidad esto no siempre es así por lo que debería existir una manera general para plantear problemas que no cumplen esta condición
+
+---
+
+# Link Functions
+
+Es por esto que al igual como ocurre con la Regrsión Logística, se puede utilizar una función extra que transforme el vector objetivo de manera tal de que represente otra distribución:
+
+* **Función Identidad**: En este caso corresponde a la Regresión Lineal Ordinaria.
+
+* **Función Logit**: Este caso corresponde a la Regresión Logística, y en este caso esta es la manera de abordar un modelo de CLasificación.
+
+* **Función Ln()**: Este caso transforma el modelo en una Regresión Poisson o Gamma.
+
+Según la documentación de Scikit Learn hay problemas específicos que pueden resolverse con este tipo de modelo:
+
+* Si $y$ posee conteos (positivos), entonces una Regresión Poisson es adecuada.
+* Si $y$ es positiva, continua y con cola larga, una Regresión Gamma es adecuada.
+
+---
+
+# Ejemplos de Aplicación
+
+* **Distribución Poisson**: número medio de sucesos por unidad de medida (tiempo).
+* **Distribución Gamma**: Medición de un fenómeno por evento Poisson.
+
+
+**Agricultura**: Número de Eventos de lluvias por año (Poisson), Cantidad de Lluvia por Evento (Gamma), Total de lluvia caída en el año (Compound Poisson Gamma).
+
+**Risk modeling**: Número de reclamos por año (Poisson), Costo por Reclamo (Gamma), Costo total de los reclamos en el año (Compound Poisson Gamma).
+
+**Mantenimiento**: Número de Interrupciones por año (Poisson), Duración de la Interrupción (Gamma), Tiempo de Interrupción Total por año (Compound Poisson Gamma).
+
+```{python, eval = FALSE}
+from sklearn.linear_model import TweedieRegressor
+tr = TweedieRegressor(power = 0)
+tr.fit(X,y)
+tr.predict(X)
+
+```
+
+* `power` definirá que tipo de distribución se seguirá: 1 = Poisson, 2 = Gamma, Valores entre 1 y 2 representan Poission y Gamma Compuesto.
+
+
+---
+
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+

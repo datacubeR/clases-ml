@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Redes Neuronales  en Keras </title>
+    <title>Redes Recurrentes</title>
     <meta charset="utf-8" />
-    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 13-10-2020 " />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 20-10-2020 " />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
@@ -12,8 +12,8 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# <span id="title-text">Redes Neuronales<br> en <code>Keras</code> </span>
-### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>13-10-2020</span> </span>
+# <span id="title-text">Redes Recurrentes</span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>20-10-2020</span> </span>
 ### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
 
 ---
@@ -24,125 +24,58 @@ class: center, middle, inverse, title-slide
 
 
 
-# Redes Neuronales Densas
 
-El tipo de Redes Neuronales más básicas son las Redes Neuronales densas, también llamadas DNN. Las principales características de este tipo de Redes son que:
+# Tipos de NN
 
-* Cada Neurona de entrada mapea un **feature** de los datos. 
-* Todas las Neuronas de una capa se encuentran unidas con todas las neuronas de la capa siguiente.
-* Se debe utilizar una Neurona por cada valor de salida.
+Hasta ahora sólo se ha considerado el tipo de red más sencilla de entender que es la Red Densa. Este tipo de Red Neuronal funciona muy bien para datos estructurados, pero tiene ciertas debilidades.
+
+* Muchos Coeficientes (Pesos) que ajustar.
+* Se debe entregar una estructura de tamaño fijo.
+* No permite datos de tipo secuencial. 
+
+
+## RNN
+
+&lt;img src="img/RNN-unrolled.png" width="90%" /&gt;
+
+
+---
+
+# Gradient Exploding/Vanishing
+
+&lt;img src="img/RNN-unrolled.png" width="90%" /&gt;
+
+---
+
+# LSTM
 
 .center[
 
-&lt;img src="img/DNN.png" width="50%" /&gt;
+
+&lt;img src="img/LSTM3-chain.png" width="90%" /&gt;
 
 
 ]
 
 ---
 
-# Cargando Keras desde Tensorflow
 
-Keras corresponde a la API de alto nivel que permite crear las arquitecturas de Redes Neuronales más populares. En el caso de querer dedicarse a la investigación y a generar modelos 100% customizados, entonces convendrá trabajar con Tensorflow directamente.
+&lt;img src="img/LSTM3-focus-f.png" width="90%" /&gt;
 
-La API de Tensorflow está cambiando rápidamente por lo que es bueno estar revisando la documentación en todo momento. A partir de Tensorflow 2.0, Keras se encuentra integrado. Esto porque en ocasiones anteriores el desarrollo de Keras estaba atrasado y generaba grandes problemas de compatibilidad.
-
-
-
-```python
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-```
-
-Lo primero que debe instanciarse es el tipo de modelo. En nuestro caso será `Sequential()`, y luego se irán agregando capas:
-
-
-```python
-model = Sequential(name = 'Modelo')
-model.add(Dense(name = 'hidden_1', units = 32, input_shape = (10,), activation = 'relu'))
-model.add(Dense(name = 'hidden_2', units = 64, activation = 'relu'))
-model.add(Dense(name = 'output', units = 1, activation = None))
-```
-
+&lt;img src="img/LSTM3-focus-C.png" width="90%" /&gt;
 
 ---
 
-# Crear DNN en Keras
+&lt;img src="img/LSTM3-focus2-i.png" width="90%" /&gt;
 
-
-```python
-model = Sequential(name = 'Modelo')
-```
-
-.pull-left[
-* Esto corresponde a instanciar el Modelo. No importa que tipo de Red Neuronal se utilice siempré se utilizará `Sequential()`.
-
-
-]
-
-.pull-right[
-**Pros**: API Extremadamente sencilla.
-
-**Cons**: Sólo permite capas de Neuronas que se aplican de manera secuencial.
-
-
-]
-
-
-```python
-model.add(Dense(name = 'hidden_1', units = 32, input_shape = (10,), activation = 'relu'))
-```
-Se utiliza el método `.add()` junto con la capa a utilizar. En este caso una capa densa, que creará uniones entre todas las neuronas de la capa anterior (en este caso la de entrada) y la actual (en este caso 'hidden_1').
-
-* **name**: Corresponde a un nombre para referirse a cada elemento del modelo. *OJO: No usar espacios*.
-* **units**: corresponde al número de neuronas de la capa.
-* **input_shape**: Corresponde a un parámetro que se coloca en la primera capa definida en Keras. Este parámetro es una tupla que define cuántas features se utilizarán para el proceso de modelamiento. No es necesario definirlo para las siguientes capas ya que se infiere capa a capa.
-* **activation**: Corresponde a la función de activación de la capa. Esta debe ser escogida cuidadosamente dependiendo de su ubicación.
-
----
-# Compilar DNN en Keras
-
-
-```python
-model.compile(loss = 'binary_crossentropy', optimizer = 'sgd', metrics = ['accuracy'])
-```
-
-`.compile()` generará el empaquetamiento final con las características con las que se optimizará y medirá la performance del modelo.
-
-* **loss**: Corresponde a la función de costo. El propósito de esta función es minimizarla lo más posible.
-* **optimizer**: Corresponde al proceso de optimización con el que se encontrará los pesos óptimos de tal manera que la red neuronal aprenda.
-* **metrics**: Corresponde a la métrica que se utilizará para encontrar el modelo óptimo.
-
-## Entrenar el modelo
-
-
-```python
-model.fit(X_train, y_train, epochs = 20, validation_split = 0.1, shuffle = True)
-```
-
-* **epochs**: Corresponde al número de pasadas de entrenamiento que se utilizarán para entrenar. 
-* **validation_split**: Corresponde a un parámetro opcional que genera un split de validación para la búsqueda de hiperparámetros.
-* **shuffle**: Permite revolver el dataset antes del split de validación.
-
+&lt;img src="img/LSTM3-focus-C.png" width="90%" /&gt;
 ---
 
-# Recomendaciones
+&lt;img src="img/LSTM3-focus-o.png" width="90%" /&gt;
+.center[
 
-.pull-left[
-&lt;img src="img/recomendacion.PNG" width="90%" /&gt;
-
-
+&lt;img src="img/LSTM3-chain.png" width="80%" /&gt;
 ]
-
-.pull-right[
-
-* Usar **relu** sólo en capas ocultas, nunca como capa de salida.
-* La capa de entrada en Keras es implicita, por lo tanto no tiene asociada una función de activación.
-* No usar función de activación es equivalente a usar una Función Identidad.
-* Para problemas de regresión también se puede usar **MAE** tanto como función de Costo como métrica de evaluación.
-]
-
-
 ---
 
 class: inverse, center, middle

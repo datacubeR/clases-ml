@@ -1,0 +1,122 @@
+---
+title: '<span id = "title-text">Redes Recurrentes</span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>20-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+
+```
+
+
+# Tipos de NN
+
+Hasta ahora sólo se ha considerado el tipo de red más sencilla de entender que es la Red Densa. Este tipo de Red Neuronal funciona muy bien para datos estructurados, pero tiene ciertas debilidades.
+
+* Muchos Coeficientes (Pesos) que ajustar.
+* Se debe entregar una estructura de tamaño fijo.
+* No permite datos de tipo secuencial. 
+
+
+## RNN
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/RNN-unrolled.png")
+```
+
+
+---
+
+# Gradient Exploding/Vanishing
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/RNN-unrolled.png")
+```
+
+---
+
+# LSTM
+
+.center[
+
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-chain.png")
+```
+
+
+]
+
+---
+
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-focus-f.png")
+```
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-focus-C.png")
+```
+
+---
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-focus2-i.png")
+```
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-focus-C.png")
+```
+---
+
+```{r, echo = FALSE, out.width='90%'}
+knitr::include_graphics("img/LSTM3-focus-o.png")
+```
+.center[
+
+```{r, echo = FALSE, out.width='80%'}
+knitr::include_graphics("img/LSTM3-chain.png")
+```
+]
+---
+
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Estas clases</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+
+

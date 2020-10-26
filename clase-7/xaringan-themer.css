@@ -102,7 +102,7 @@ a, a > code {
 }
 /* Two-column layout */
 .left-column {
-  width: 69%;
+  width: 20%;
   height: 92%;
   float: left;
 }
@@ -113,17 +113,17 @@ a, a > code {
   color: #586e75;
 }
 .right-column {
-  width: 29%;
+  width: 75%;
   float: right;
   padding-top: 1em;
 }
 .pull-left {
   float: left;
-  width: 49%;
+  width: 47%;
 }
 .pull-right {
   float: right;
-  width: 49%;
+  width: 47%;
 }
 .pull-right ~ * {
   clear: both;

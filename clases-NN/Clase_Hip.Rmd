@@ -1,0 +1,144 @@
+---
+title: '<span id = "title-text">Hiperparámetros en Redes Neuronales<br> en `Keras` </span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>15-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+
+```
+
+# Redes Neuronales Densas
+
+Una red neuronal tiene muchos hiperparametros y el correcto uso de ellos dependerá exclusivamente del entendimiento que se tenga de los procesos de optimización y el tipo de problema a resolver.
+
+Durante esta clase se revisará algunos de los parámetros más simples que se pueden variar de modo de mejorar la performance de la red Neuronal:
+
+## Parámetros de Neurona
+
+* **units**: Número de Neuronas
+* **activation**: La función de activación a utilizar
+* **Número de Capas**: Cuantas capas ocultas utilizar.
+
+> NOTA:
+Estos hiperaparámetros se cambiarán directamente en la capa densa y en la estructura de la red.
+
+---
+
+## Regularización:
+
+* **Agregar capa Dropout**: Esta corresponde a una capa adicional que se agrega después de una capa oculta. Esta capa adicional genera una desconexión aleatoria de una proporción de las conexiones. Tiene como único hiperparámetro **rate** que indica la proporción de neuronas a desconectar.
+
+* **Utilizar proceso de mini-batch**: Este proceso evita que toda la data viaje en Forward y en Backward. SU pro es que evita que la Red se ajuste a toda la data a la vez, el contra es que el proceso de entrenamiento se vuelve más largo.
+
+.center[
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/DNN.png")
+```
+]
+
+---
+
+## Optimizer
+
+Keras tiene 8 tipos de Optimizers distintos:
+Normalmente los valores por defecto funcionan bastante bien, y determinar valores distintos a ello implica un estudio más profundo del optimizer en cuestión.
+
+* **Adam**: 
+
+.pull-left[
+.center[
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/adam1_decay.png")
+```
+```{r, echo = FALSE, out.width='60%'}
+knitr::include_graphics("img/adam2_decay.png")
+```
+
+```{r, echo = FALSE, out.width='40%'}
+knitr::include_graphics("img/adam1.png")
+```
+
+]
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/adam2.jpg")
+```
+
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/adam_keras.png")
+```
+]
+
+
+
+---
+
+# Optimizer
+  
+* **Rmsprop**:
+
+.pull-left[
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/rmsprop1.png")
+```
+
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/rmsprop2.png")
+```
+
+
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width='50%'}
+knitr::include_graphics("img/rmsprop_keras.png")
+```
+
+]
+
+
+---
+
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Estas clases</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+
+

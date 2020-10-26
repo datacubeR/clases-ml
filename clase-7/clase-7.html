@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelos Lineares Generalizados </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 19-10-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Modelos Lineares Generalizados<br></span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>19-10-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+
+# Modelos Lineales
+
+`$$f(X) = \sum_{i = 0}^p \beta_i X_i + \epsilon_i,\, p: \text{ Número de Features}$$`
+De acá se sabe que la regresión Lineal debe cumplir con las siguiente características:
+
+* `\(\epsilon_i\)` deben ser independientes (no correlacionados)
+* `\(y \sim N(0, \sigma^2)\)`.
+
+
+
+&gt; NOTA: De esta condición se desprende que `\(y = f(X)\)` debería ser una variable aleatoria normal. Dado que la única componente aleatoria de la regresión es el error. En la realidad esto no siempre es así por lo que debería existir una manera general para plantear problemas que no cumplen esta condición
+
+---
+
+# Link Functions
+
+Es por esto que al igual como ocurre con la Regrsión Logística, se puede utilizar una función extra que transforme el vector objetivo de manera tal de que represente otra distribución:
+
+* **Función Identidad**: En este caso corresponde a la Regresión Lineal Ordinaria.
+
+* **Función Logit**: Este caso corresponde a la Regresión Logística, y en este caso esta es la manera de abordar un modelo de CLasificación.
+
+* **Función Ln()**: Este caso transforma el modelo en una Regresión Poisson o Gamma.
+
+Según la documentación de Scikit Learn hay problemas específicos que pueden resolverse con este tipo de modelo:
+
+* Si `\(y\)` posee conteos (positivos), entonces una Regresión Poisson es adecuada.
+* Si `\(y\)` es positiva, continua y con cola larga, una Regresión Gamma es adecuada.
+
+---
+
+# Ejemplos de Aplicación
+
+* **Distribución Poisson**: número medio de sucesos por unidad de medida (tiempo).
+* **Distribución Gamma**: Medición de un fenómeno por evento Poisson.
+
+
+**Agricultura**: Número de Eventos de lluvias por año (Poisson), Cantidad de Lluvia por Evento (Gamma), Total de lluvia caída en el año (Compound Poisson Gamma).
+
+**Risk modeling**: Número de reclamos por año (Poisson), Costo por Reclamo (Gamma), Costo total de los reclamos en el año (Compound Poisson Gamma).
+
+**Mantenimiento**: Número de Interrupciones por año (Poisson), Duración de la Interrupción (Gamma), Tiempo de Interrupción Total por año (Compound Poisson Gamma).
+
+
+```python
+from sklearn.linear_model import TweedieRegressor
+tr = TweedieRegressor(power = 0)
+tr.fit(X,y)
+tr.predict(X)
+```
+
+* `power` definirá que tipo de distribución se seguirá: 1 = Poisson, 2 = Gamma, Valores entre 1 y 2 representan Poission y Gamma Compuesto.
+
+
+---
+
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

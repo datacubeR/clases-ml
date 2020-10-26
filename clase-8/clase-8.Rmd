@@ -1,0 +1,248 @@
+---
+title: '<span id = "title-text">Regularización<br></span>'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>26-10-2020</span> </span> '
+date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: solarized-dark
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_condaenv(condaenv = 'MLprojects')
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+```
+
+# Complejidad de los modelos
+
+.left-column[
+
+```{r, echo = F, eval = TRUE, out.width= '90%'}
+knitr::include_graphics("img/model_complexity.PNG")
+```
+
+
+]
+
+.right-column[
+
+La complejidad de un modelo se controlará 
+
+
+* Alterando la data
+   * Más Observaciones
+   * Más variables
+
+* Alterando el modelo
+  * Hiperparámetros
+
+
+
+]
+---
+
+# Qué es un Hiperparámetro?
+
+Corresponde a un valor qué varía la complejidad de un modelo y que no **puede ser aprendido por el modelo por sí mismo**. Debe buscarse por el modelador mediante GridSearch y Cross Validation.
+
+* **n_neighbors**: Número de Vecinos
+
+.pull-left[
+
+.center[
+
+```{r, echo = F, eval = TRUE, out.width= '70%'}
+knitr::include_graphics("img/n_neighbors.PNG")
+```
+
+
+]
+
+
+]
+
+.pull-right[
+
+Se llama **Regularización** el proceso de evitar que el modelo se complejice de modo tal que pueda generalizar mejor.
+
+Todo Hiperparámetro tiene una componente de Ajuste y de regularización.
+
+]
+
+
+---
+
+# Regularización L1 y L2
+
+.center[
+
+```{r, echo = F, eval = TRUE, out.width= '90%'}
+knitr::include_graphics("img/fitting.PNG")
+```
+
+
+]
+
+.pull-left[
+
+
+
+## L2
+
+$$\beta_{Ridge} = argmin_{\beta} \sum_{i = 1}^n (y_i - \hat{y_i})^2 + \lambda \sum_{j = 1}^p \beta_j^2$$
+]
+
+.pull-right[
+## L1
+
+$$\beta_{Lasso} = argmin_{\beta} \sum_{i = 1}^n (y_i - \hat{y_i})^2 + \lambda \sum_{j = 1}^p |\beta_j|$$
+]
+---
+
+# Implementación en Scikit Learn
+
+```{python, eval = FALSE}
+from sklearn.linear_model import Lasso, LassoCV, Ridge, RidgeCV
+```
+
+## Lasso
+
+```{python, eval = FALSE}
+lasso = Lasso(alpha = 1, random_state = 123)
+lasso.fit(X,y)
+y_pred = lasso.predict(X,y)
+```
+
+### Hiperparámetros
+**alpha**: Equivalente a lambda. Parámetro regularizador, más grande más regularización. Default: 1.
+
+---
+
+# Implementación en scikit Learn
+
+```{python, eval = FALSE}
+lassocv = LassoCV(eps = 1e-3, n_alphas = 100, random_state = 123, n_jobs = -1)
+lassocv.fit(X,y)
+y_pred = lassocv.predict(X,y)
+```
+### Hiperparámetros
+
+* **n_alphas**: Número de alphas distintos a probar. Default: 100.
+
+* **eps**: Ratio alpha_min / alpha_max. Default: 1e-3
+
+### Atributos
+
+* **.alpha_** devuelve el valor del alpha óptimo.
+
+* **.alphas_** Grilla de alphas usados.
+
+[Ver docs](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html) para más detalles.
+
+---
+
+# Implementación en Scikit Learn
+
+## Ridge
+
+```{python, eval = FALSE}
+ridge = Ridge(alpha = 1, random_state = 123)
+ridge.fit(X,y)
+y_pred = ridge.predict(X,y)
+```
+### Hiperparámetros
+**alpha**: Equivalente a lambda. Parámetro regularizador, más grande más regularización. Default: 1.
+---
+
+# Implementación en Scikit Learn
+
+```{python, eval = FALSE}
+ridgecv = RidgeCV(alphas = (0.1, 1.0, 10.0))
+ridgecv.fit(X,y)
+y_pred = ridgecv.predict(X,y)
+```
+
+### Hiperparámetros
+**alphas**: Arreglo de valores de alpha a probar. Default: (0.1, 1.0, 10.0).
+
+> NOTA: RidgeCV no tiene random_state.
+
+### Atributos
+
+* **.alpha_** devuelve el valor del alpha óptimo.
+
+[Ver docs](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RidgeCV.html) para más detalles.
+---
+
+# Implementación en Scikit Learn
+
+## ElasticNet
+
+```{python, eval = FALSE}
+from sklearn.linear_model import ElasticNet, ElasticNetCV
+elastic = ElasticNet(alpha = 1, l1_ratio = 0.5, random_state = 123) 
+elastic.fit(X,y)
+y_pred = elastic.predict(X,y)
+```
+### Hiperparámetros
+
+**alpha**: Equivalente a lambda. Parámetro regularizador, más grande más regularización. Default: 1.
+**l1_ratio**: Corresponde a la proporción de l1 y l2 a utilizar. Más cercano a 1 es más Lasso, más cercano a 0 es Ridge.
+
+$$a * L1 + b * L2$$
+donde $alpha = a + b$ y $l1\_ratio = a / (a + b)$
+
+
+---
+# Implementación en Scikit Learn
+
+```{python, eval = FALSE}
+elasticCV = ElasticNetCV(l1_ratio=0.5, eps=0.001, n_alphas=100, random_state = 123)
+elasticcv.fit(X,y)
+y_pred = elasticcv.predict(X,y)
+```
+
+### Hiperparámetros
+
+**l1_ratio**: Corresponde a la proporción de l1 y l2 a utilizar. Más cercano a 1 es más Lasso, más cercano a 0 es Ridge.
+
+* **n_alphas**: Número de alphas distintos a probar. Default: 100.
+
+* **eps**: Ratio alpha_min / alpha_max. Default: 1e-3
+
+[Ver docs](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNetCV.html) para más detalles.
+
+---
+class: inverse, center, middle
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title">Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn</span> fueron creadas por
+<span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName">Alfonso
+Tobar</span> y están licenciadas bajo <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License</a>.
+
+
+
+
+
+
+
+
+

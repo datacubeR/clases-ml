@@ -119,11 +119,11 @@ a, a > code {
 }
 .pull-left {
   float: left;
-  width: 49%;
+  width: 47%;
 }
 .pull-right {
   float: right;
-  width: 49%;
+  width: 47%;
 }
 .pull-right ~ * {
   clear: both;
