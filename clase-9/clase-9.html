@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Naive Bayes </title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 02-11-2020 " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <span id="title-text">Naive Bayes<br></span>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>02-11-2020</span> </span>
+### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+
+---
+
+
+
+
+
+
+
+# Teorema de Bayes
+
+El modelo Naive Bayes es un módelo de **CLASIFICACIÓN** basado fuertemente en un contexto Probabilístico dado por el Teorema de Bayes:
+    
+`$$P[B|A] = \frac{P[A | B] \cdot P[B]}{P[A]}$$`
+
+Existe una cierta nomenclatura para poder referirse a cada uno de los elementos conformantes del Modelo de Bayes:
+
+* `\(P[A|B]\)`: Se le llama normalmente likelihood/verosimilitud el cual entrega la información que nosotros nos interesa y que sabemos de manera previa.
+* `\(P[B]\)`: corresponde a la Probabilidad A priori del fenómeno estudiar. Se le llama a priori porque es la probabilidad del fenómeno sin estar definida por un condición.
+* `\(P[A]\)`: Se le llama evidencia, y corresponde a la probabilidad de variables con las que queremos condicionar nuestro fenómeno.
+
+* `\(P[B|A]\)`: Se le llama probabilidad a Posteriori y corresponde a la probabilidad luego de ser condicionada por mi Evidencia.   
+
+---
+
+# Ejemplo
+
+Asumamos que sabemos que hay una probabilidad conjunta del 95% que cuando una persona le guste a alguien, sonría. Se sabe que existe un 10% de probabilidad que le sonría a un extraño y un 1% que le guste alguien al azar.  
+
+* A posteriori: ¿Le gusto a alguien dado que me sonríe? 
+
+* Incógnita  
+  
+--
+
+* Verosimilitud: ¿Me sonríe porque le gusto?  
+
+--
+
+  * 0.95 
+  
+--
+
+* A priori: ¿Cual es la probabilidad que le guste alguien al azar?  
+
+--
+
+  * 0.01 
+  
+--
+
+* Evidencia: ¿Sonríe al azar?  
+
+--
+
+  * 0.1  
+  
+
+`$$P[B|A] = \frac{P[A | B] \cdot P[B]}{P[A]} = 0.095$$`
+
+???
+
+A: Será el evento Sonreir.
+B: Evento Gustar a alguien.
+---
+## Cómo predice un Modelo Naive Bayes
+
+.left-column[
+.center[
+
+
+&lt;img src="img/nb_example.PNG" width="70%" /&gt;
+]
+]
+
+.right-column[
+
+
+```python
+pd.crosstab(df.Tiempo, df.Jugar)
+```
+
+
+&lt;img src="img/crosstab-nb.PNG" width="184" /&gt;
+
+**X** : Será nuestra variable Tiempo
+
+**y** : Jugar, Sí o No?
+
+`$$P[Jugar = True | Soleado] = \frac{P[Soleado | Jugar = True] * P[J=True]}{P[Soleado]}$$`
+]
+
+???
+
+P[Soleado | Jugar = True] = 2/9
+
+P[Soleado | Jugar = True] = 0.64 = 9/14
+
+P[Soleado] = 5/14
+
+
+
+---
+
+# Por qué *Naive* (Ingenuo)?
+
+`$$P[y| x_1,x_2,...,x_n] = \frac{P[y]\cdot \prod_{i=1}^n P(x_i|y)}{P[x_1,x_2,...,x_n]} \propto P[y]\cdot \prod_{i=1}^n P(x_i|y)$$`
+
+&gt; NOTA: Existen muchos tipos de Modelos Naive Bayes en Scikit-Learn. La principal diferencia entre todos ellos es como calculan la Probabilidad Condicional. Para ello se hacen ciertos supuestos dependiendo de la distribución de los Datos.
+
+
+---
+
+# Implementación en Scikit - Learn
+
+### Multinominal NB
+
+.pull-left[
+
+* **Pros**:
+- Buen Modelo Baseline
+- Rápido
+- No muy complejo de trabajar ni procesar.
+- Funciona bien con donde los predictores son conteos.
+
+]
+
+.pull-right[
+* **Contras**
+- Muy simplista
+- Sus condiciones base no siempre son ciertas por lo que efectivamente es muy ingenuo.
+
+]
+
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+MNB = MultinomialNB(alpha = 1) # no tiene random_state
+MNB.fit(X, y)
+y_pred = MNB.predict(X)
+```
+
+* `\(\alpha\)`: Corresponde a un parámetro de suavizamiento que toma en cuenta features no presentes en los datos de entrenamiento previniendo las probabilidades cero. `\(\alpha = 1\)` es llamado suavizamiento de Laplace mientras que `\(\alpha &lt; 0\)` es llamado Suavizamiento de Lidstone.
+
+---
+
+# Implementación en Scikit - Learn
+
+### Gaussian NB
+
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+GNB = GaussianNB(var_smoothing = 1e-09) # no tiene random_state
+GNB.fit(X, y)
+y_pred = GNB.predict(X)
+```
+
+&gt; NOTA: Este modelo permite utilizar variables continuas como predictoras. En este caso asume una que los predictores asumen una distribución normal.
+
+
+`$$P[x_i| y] = \frac{1}{\sqrt{2\pi\sigma_y^2}}exp\left(-\frac{(x_i-\mu_y)^2}{2\sigma_y^2}\right)$$`
+
+donde `\(\mu_y\)` y `\(\sigma_y\)` se calculan por máxima verosimilitud.
+
+* **var_smoothing**: Corresponde a un parámetro de estabilidad de cálculo.
+
+---
+class: inverse, center, middle
+
+&lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;&lt;span xmlns:dct="http://purl.org/dc/terms/" data-property="dct:title"&gt;Todas las clases del curso de Machine Learning Aplicado en Scikit-Learn&lt;/span&gt; fueron creadas por
+&lt;span xmlns:cc="http://creativecommons.org/ns#" data-property="cc:attributionName"&gt;Alfonso
+Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License&lt;/a&gt;.
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "solarized-dark",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
