@@ -1,6 +1,6 @@
 ---
 title: '<span id = "title-text">Introducción al aprendizaje no supervisado<br></span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>02-11-2020</span> </span> '
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>09-11-2020</span> </span> '
 date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
 
 output:
@@ -56,7 +56,7 @@ Estos modelos entonces buscaran segmentar y generar clusters de datos que conten
 .pull-left[
 
 .right[
-```{r, echo = F, eval = TRUE, out.width='50%'}
+```{r, echo = F, eval = TRUE, out.width='45%'}
 knitr::include_graphics("img/Clustering.PNG")
 ```
 ]
@@ -64,7 +64,7 @@ knitr::include_graphics("img/Clustering.PNG")
 .pull-right[
 .left[
 
-```{r, echo = F, eval = TRUE, out.width='50%'}
+```{r, echo = F, eval = TRUE, out.width='45%'}
 knitr::include_graphics("img/kmeans.PNG")
 ```
 ]
