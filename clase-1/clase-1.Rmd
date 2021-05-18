@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Introducción al Modelamiento<br> en `Scikit-Learn` </span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>21-09-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>18-05-2021</span> </span> '
+date: '`r icon::fontawesome("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -178,7 +178,7 @@ transformer.fit_transform(X,y)
 
 # Qué es un modelo?
 
-Normalmente estamos acostumbrados a calcular funciones, donde dado un valor de X obtenemos un valor de y siempre y cuando conozcamos la función.
+Normalmente estamos acostumbrados a calcular funciones, donde teniendo un valor de X obtenemos un valor de y siempre y cuando conozcamos la función.
 
 * $y = f(x)$
 * $f(x) = x$
@@ -226,7 +226,7 @@ Determinar si una vacuna contra una enfermedad será efectiva o no si conocemos:
 Los problemas de Regresión son aquellos donde nuestra variable a predecir $y$ es de tipo continua. 
 
 .pull-left[
-```{r, echo = F, out.width= 500}
+```{r, echo = F, out.width= '90%'}
 knitr::include_graphics("img/regresion.png")
 ```
 
@@ -234,7 +234,7 @@ knitr::include_graphics("img/regresion.png")
 ]
 
 .pull-right[
-```{r, echo = F, eval = TRUE, out.width= 800}
+```{r, echo = F, eval = TRUE, out.width= 500}
 knitr::include_graphics("img/modelo.png")
 ```
 
@@ -258,13 +258,11 @@ knitr::include_graphics("img/regresion.png")
 
 .pull-right[
 
-$$f(X) = \sum_{i = 0}^p \beta_i X_i + \epsilon_i,\, p: \text{ Número de Features}$$
+$$E[y | X] = \sum_{i = 0}^p \beta_i X_i + \epsilon_i,\, p: \text{ Número de Features}$$
 
 Los valores de $\beta$ se obtienen mediante un proceso de optimización, este método puede ser:
 
 * Mínimos Cuadrados
-* Stocastic Gradient Descent.
-* etc.
 
 En ambos métodos se busca minimizar una función de costo, de tal manera de encontrar $\beta_i$ óptimos que minimizen el error.
 
@@ -309,10 +307,9 @@ lr.score(X,y)
 
 > `0.8690157644777647`
 
-[Ver Docs](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
-
 .footnote[
 * `.score()` devuelve el $R^2$ Score para modelos de regresión. Esta métrica va entre 0 y 1, siendo 0 el peor ajuste y 1 un ajuste perfecto.
+[Ver Docs](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 ]
 
 ---
@@ -493,10 +490,10 @@ names = load_boston()['feature_names']
 
 .pull-left[
 
-> `Score Train: 0.5174979976746197`
-> `Score Test: 0.5078285584893742`
+> `Score Train: 0.5174979976746197`  
+> `Score Test: 0.5078285584893742`  
 > `Max coef: s5`  
-> `Min coef: s1`
+> `Min coef: s1`  
 
 ]
 
@@ -504,7 +501,7 @@ names = load_boston()['feature_names']
 .pull-right[
 
 > `Score Train: 0.7559380876016175`  
-> `Score Test: 0.6592466510354097`
+> `Score Test: 0.6592466510354097`  
 > `Max coef: RM`  
 > `Min coef: NOX`
 
@@ -640,8 +637,7 @@ r2_score(y_test, y_pred)
 #### MSPE: Mean Squared Percentage Error* 
 Corresponde al MSE pero de tipo porcentual
 
-
-#### MAPE: Mean Absolute Percentage Error* 
+#### MAPE: Mean Absolute Percentage Error
 
 Corresponde al MAE de tipo Porcentual
 
@@ -649,15 +645,10 @@ Corresponde al MAE de tipo Porcentual
 
 Error similar al MAE pero utilizando la mediana para agregar los valores.
 
-#### Mean Squared Log Error
 
-MSE pero en escala logarítmica.
-
-
-[Ver docs](https://scikit-learn.org/stable/modules/model_evaluation.html)
-
-
-.footnote[*Estas métricas no se encuentran implementadas actualmente en `scikit-learn` de manera directa, pero pueden ser métricas útiles al momento de evaluar un modelo.]
+.footnote[*Estas métricas no se encuentran implementadas actualmente en `scikit-learn` de manera directa, pero pueden ser métricas útiles al momento de evaluar un modelo.
+En caso de dudas [ver docs](https://scikit-learn.org/stable/modules/model_evaluation.html)
+]
 
 
 ---

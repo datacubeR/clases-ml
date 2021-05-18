@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Uso de Transformers<br> en `Scikit-Learn` </span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>23-09-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>20-05-2021</span> </span> '
+date: '`r icon::fontawesome("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -190,21 +190,17 @@ evaluation(y_test, y_pred)
 
 # Cómo agregar variables categóricas?
 
-Las variables categóricas no son variables que los modelos procesan en primera instancia y normalmente deben pasar primero por un proceso de **encoding**<sup>2</sup> .
+Las variables categóricas no son variables que los modelos procesan en primera instancia y normalmente deben pasar primero por un proceso de **encoding**.
 
-#### `Scikit-Learn` posee algunas funciones de enconding que se pueden encontrar en `sklearn.preprocessing`, pero existe una librería alternativa llamada category-encoders<sup>3</sup> que será la que utilizaremos.
+#### `Scikit-Learn` posee algunas funciones de enconding que se pueden encontrar en `sklearn.preprocessing`, pero existe una librería alternativa llamada ~~category-encoders~~ feature-engine que será la que utilizaremos.
 
 * La principal ventaja de category-encoders es que devuelve pandas DataFrames lo cuales son más sencillos de trabajar, además de proveer soporte para encodings más avanzados no disponibles en `scikit-learn`.
 * Es posible escoger qué variables encodear además de lidiar automáticamente con variables no vistas durante el entrenamiento y missing values. [Ver docs](https://contrib.scikit-learn.org/category_encoders/)
 
 ```{python, eval = FALSE}
-from category_encoders import OrdinalEncoder, OneHotEncoder # Opción recomendada
+from feature_engine.encoding import OrdinalEncoder, OneHotEncoder # Opción recomendada
 from sklearn.preprocessing import OrdinalEncoding, OneHotEncoder # no tan recomendada
 ```
-
-.footnote[
-[2]: Encoding se refiere al proceso de llevarlas a un código numérico que represente cada categoría.  
-[3]: category-encoders es parte de scikit-contrib, que son librerías complementarias recomendadas por el mismo `scikit-learn`.]
 
 ---
 
@@ -236,9 +232,6 @@ knitr::include_graphics("img/ordinal.png")
 * Se recomienda para variables ordinales.
 * Los modelos de árboles aprovechan de mejor manera este encoding.
 
-<br>
-<br>
-
 ```{python, eval = FALSE}
 df_new.Embarked.value_counts()
 ```
@@ -248,7 +241,7 @@ df_new.Embarked.value_counts()
 > `3     77`  
 > `4      2`  
 
-Utilizando `.get_params()` es posible obtener de qué manera se hizo el mapeo de variables.
+Utilizando `.get_params()` es posible obtener la configuración utilizada.
 
 ]
 
@@ -328,8 +321,10 @@ El `Pipeline` permite el uso de varios estimators y transformers en orden, de ta
 
 ```{python, eval = FALSE}
 from sklearn.pipeline import Pipeline
+from feature_engine.imputation import CategoricalImputer
 
 pipe = Pipeline(steps = [
+    ('imp', CategoricalImputer(imputation_method = 'frequent')),
     ('ohe', OneHotEncoder()),
     ('sc', StandardScaler()),
     ('knn', KNeighborsRegressor())
@@ -337,8 +332,6 @@ pipe = Pipeline(steps = [
 
 pipe.fit(X_train, y_train)
 y_pred = pipe.predict(X_test)
-
-
 ```
 
 ---
