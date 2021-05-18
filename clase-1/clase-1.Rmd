@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Introducción al Modelamiento<br> en `Scikit-Learn` </span>'
 author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>18-05-2021</span> </span> '
-date: '`r icon::fontawesome("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+date: '`r icon::fontawesome("github")` [github.com/datacubeR/clases-ml/Slides](https://github.com/datacubeR/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -251,7 +251,7 @@ knitr::include_graphics("img/modelo.png")
 .pull-left[
 
 ```{r, echo = F, eval = TRUE, out.width= 700}
-knitr::include_graphics("img/regresion.png")
+knitr::include_graphics("img/PROPER.png")
 ```
 
 ]
@@ -377,7 +377,7 @@ knitr::include_graphics("img/regresion.png")
 
 #### Underfitting/Subajuste
 ```{r, echo = F, eval = TRUE, out.height= 200}
-knitr::include_graphics("img/regresion.png")
+knitr::include_graphics("img/UNDERFITTING.png")
 ```
 
 ]
@@ -386,7 +386,7 @@ knitr::include_graphics("img/regresion.png")
 
 #### Overfitting/Sobreasjustado
 ```{r, echo = F, eval = TRUE, out.height= 200}
-knitr::include_graphics("img/regresion.png")
+knitr::include_graphics("img/OVERFITTING.png")
 ```
 
 ]
@@ -396,7 +396,7 @@ knitr::include_graphics("img/regresion.png")
 
 
 ```{r, echo = F, eval = TRUE, out.height= 200}
-knitr::include_graphics("img/regresion.png")
+knitr::include_graphics("img/PROPER.png")
 ```
 
 ]
