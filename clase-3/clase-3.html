@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>Modelos de Clasificación  en Scikit-Learn </title>
+    <title>Modelos de Clasificación  en Scikit-Learn</title>
     <meta charset="utf-8" />
-    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 28-09-2020 " />
-    <script src="libs/header-attrs/header-attrs.js"></script>
-    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 25-05-2020" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -13,8 +11,8 @@
 class: center, middle, inverse, title-slide
 
 # <span id="title-text">Modelos de Clasificación<br> en <code>Scikit-Learn</code> </span>
-### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>28-09-2020</span> </span>
-### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>25-05-2020</span> </span>
+### <svg viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg" style="height:1em;fill:currentColor;position:relative;display:inline-block;top:.1em;"> [ comment ] <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <a href="https://github.com/datacubeR/clases-ml/tree/master/Slides">github.com/datacubeR/clases-ml/Slides</a>
 
 ---
 
@@ -86,16 +84,15 @@ Coloquemos el siguiente ejemplo donde:
 
 Luego cuando la Recta de decisión es mayor que cero, la regresión Logística predecirá valores mayores a 0.5, y para valores bajo la recta de decisión predecirá valores menores a 0.5.
 
-
 .left-column[
 
-&lt;img src="img/clasificacion2.png" width="600" /&gt;
+&lt;img src="img/clasificacion2.png" width="80%" /&gt;
 
 ]
 
 .right-column[
 
-&gt; NOTA: Dado que el recorrido de la función Sigmoide es entre 0 y 1, este valor puede ser interpretado como la probabilidad de pertenecer a una clase. 
+&gt; NOTA: Dado que el recorrido de la función Sigmoide es entre 0 y 1, este valor se interpreta como una probabilidad. 
 
 `$$P[y] = g( \sum_{i = 0}^p \beta_i X_i + \epsilon_i)$$`
 `$$y = \begin{cases} 1, 
@@ -110,7 +107,7 @@ lr = LogisticRegression(random_state = 123)
 lr.fit(X,y)
 lr.predict(X)
 lr.predict_proba(X)
-lr.score(X,y)
+lr.score(X,y) # accuracy
 ```
 
 ]
@@ -132,7 +129,6 @@ Adicionalmente también podríamos implementar un modelo KNN para clasificación
 
 .right-column[
 &lt;br&gt;
-&lt;br&gt;
 
 
 ```python
@@ -141,7 +137,7 @@ knn = KNeighborsClassifier()
 knn.fit(X,y)
 knn.predict(X)
 knn.predict_proba(X)
-knn.score(X,y)
+knn.score(X,y) # accuracy
 ```
 
 
@@ -189,7 +185,7 @@ Dentro de los problemas de clasificación existe una variedad gigante de métric
 
 .center[
 
-&lt;img src="img/metrics.png" width="164" /&gt;
+![](img/metrics.png)&lt;!-- --&gt;
 
 ]
 
@@ -205,7 +201,7 @@ plot_confusion_matrix(valores.y_real, valores.y_pred)
 
 .center[
 
-&lt;img src="img/conf_mat_ex.png" width="421" /&gt;
+![](img/conf_mat_ex.png)&lt;!-- --&gt;
 
 
 ]
@@ -225,7 +221,7 @@ plot_confusion_matrix(valores.y_real, valores.y_pred)
 
 .left-column[
 
-&lt;img src="img/conf_mat_ex.png" width="421" /&gt;
+![](img/conf_mat_ex.png)&lt;!-- --&gt;
 
 ]
 
@@ -254,7 +250,7 @@ plot_confusion_matrix(valores.y_real, valores.y_pred)
 
 `$$Precision = \frac{TP}{TP+FP} = \frac{1}{1+2} = 0.33$$`
 
-&lt;img src="img/conf_mat_ex.png" width="400" /&gt;
+&lt;img src="img/conf_mat_ex.png" width="70%" /&gt;
 
 ]
 
@@ -291,7 +287,7 @@ Cancer. Predecir que un tumor no es maligno cuando en realidad lo es puede dar u
 
 Precision y Recall son intercambiables y dependen del orden de las clases a predecir. Adicionalmente Precision y recall son antagonistas. Mejorar una empeora la otra y viceversa. Por lo tanto a veces se requiere buscar un equilibrio entre ambas y eso es lo que entrega F1. F1 corresponde a la media armónica de Precision y Recall.
 
-`$$F1 = 2 \ cdot \frac{Precision \cdot Recall}{Precision + Recall} = 2\cdot \frac{0.33 \cdot 0.25}{0.33 + 0.25} = 0.284$$`
+`$$F1 = 2 \cdot \frac{Precision \cdot Recall}{Precision + Recall} = 2\cdot \frac{0.33 \cdot 0.25}{0.33 + 0.25} = 0.284$$`
 
 
 &gt; NOTA: Es importante que dado que todas estas métricas dependen de la Matriz de Confusión pueden variar dependiendo del punto de corte escogido para seleccionar una predicción u otra (recordar que por defecto es 0.5).
@@ -337,7 +333,7 @@ Adicionalmente existe una interpretación alternativa, en la cual la curva ROC r
 
 .pull-left[
 
-&lt;img src="img/roc.png" width="400" /&gt;
+&lt;img src="img/roc.png" width="70%" /&gt;
 
 ]
 
@@ -366,7 +362,7 @@ plot_cumulative_gain(y, y_proba)
 ```
 .pull-left[
 
-&lt;img src="img/gain.png" width="450" /&gt;
+&lt;img src="img/gain.png" width="70%" /&gt;
 
 ]
 
@@ -393,7 +389,7 @@ from sklearn.metrics import log_loss
 log_loss(y, y_pred)
 ```
 
-&gt; NOTA: Cuando lo más importante en el modelo es acertar lo mejor posible a la probabilidad entonces esta métrica puede ser de gran importancia ya que penaliza entre mayor incertidumbre probabilística exista.
+&gt; NOTA: Cuando lo más importante en el modelo es acertar lo mejor posible a la probabilidad, entonces esta métrica puede ser de gran importancia ya que penaliza entre mayor incertidumbre probabilística exista.
 Esta métrica es comparativa y entre menos sea, menor será el error.
 
 
@@ -407,8 +403,6 @@ class: inverse, center, middle
 Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International
 License&lt;/a&gt;.
-
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -457,6 +451,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -474,17 +494,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {

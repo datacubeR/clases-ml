@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Modelos de Clasificación<br> en `Scikit-Learn` </span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>28-09-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>25-05-2020</span> </span> '
+date: '`r icon::fontawesome("github")` [github.com/datacubeR/clases-ml/Slides](https://github.com/datacubeR/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -99,10 +99,9 @@ $$y = \begin{cases} 1,
 
 Luego cuando la Recta de decisión es mayor que cero, la regresión Logística predecirá valores mayores a 0.5, y para valores bajo la recta de decisión predecirá valores menores a 0.5.
 
-
 .left-column[
 
-```{r, echo = FALSE, out.width = 600}
+```{r, echo = FALSE, out.width = '80%'}
 knitr::include_graphics("img/clasificacion2.png")
 
 ```
@@ -111,7 +110,7 @@ knitr::include_graphics("img/clasificacion2.png")
 
 .right-column[
 
-> NOTA: Dado que el recorrido de la función Sigmoide es entre 0 y 1, este valor puede ser interpretado como la probabilidad de pertenecer a una clase. 
+> NOTA: Dado que el recorrido de la función Sigmoide es entre 0 y 1, este valor se interpreta como una probabilidad. 
 
 $$P[y] = g( \sum_{i = 0}^p \beta_i X_i + \epsilon_i)$$
 $$y = \begin{cases} 1, 
@@ -125,7 +124,7 @@ lr = LogisticRegression(random_state = 123)
 lr.fit(X,y)
 lr.predict(X)
 lr.predict_proba(X)
-lr.score(X,y)
+lr.score(X,y) # accuracy
 ```
 
 ]
@@ -150,7 +149,6 @@ knitr::include_graphics("img/clasificacion2.png")
 
 .right-column[
 <br>
-<br>
 
 ```{python, eval = FALSE}
 from sklearn.neighbors import KNeighborsClassifier
@@ -158,7 +156,7 @@ knn = KNeighborsClassifier()
 knn.fit(X,y)
 knn.predict(X)
 knn.predict_proba(X)
-knn.score(X,y)
+knn.score(X,y) # accuracy
 ```
 
 
@@ -280,7 +278,7 @@ knitr::include_graphics("img/conf_mat_ex.png")
 
 $$Precision = \frac{TP}{TP+FP} = \frac{1}{1+2} = 0.33$$
 
-```{r, echo = FALSE, out.width = 400}
+```{r, echo = FALSE, out.width = '70%'}
 knitr::include_graphics("img/conf_mat_ex.png")
 ```
 
@@ -319,7 +317,7 @@ Cancer. Predecir que un tumor no es maligno cuando en realidad lo es puede dar u
 
 Precision y Recall son intercambiables y dependen del orden de las clases a predecir. Adicionalmente Precision y recall son antagonistas. Mejorar una empeora la otra y viceversa. Por lo tanto a veces se requiere buscar un equilibrio entre ambas y eso es lo que entrega F1. F1 corresponde a la media armónica de Precision y Recall.
 
-$$F1 = 2 \ cdot \frac{Precision \cdot Recall}{Precision + Recall} = 2\cdot \frac{0.33 \cdot 0.25}{0.33 + 0.25} = 0.284$$
+$$F1 = 2 \cdot \frac{Precision \cdot Recall}{Precision + Recall} = 2\cdot \frac{0.33 \cdot 0.25}{0.33 + 0.25} = 0.284$$
 
 
 > NOTA: Es importante que dado que todas estas métricas dependen de la Matriz de Confusión pueden variar dependiendo del punto de corte escogido para seleccionar una predicción u otra (recordar que por defecto es 0.5).
@@ -367,7 +365,7 @@ Adicionalmente existe una interpretación alternativa, en la cual la curva ROC r
 
 .pull-left[
 
-```{r, echo = FALSE, out.width= 400}
+```{r, echo = FALSE, out.width= "70%"}
 knitr::include_graphics("img/roc.png")
 ```
 
@@ -398,7 +396,7 @@ plot_cumulative_gain(y, y_proba)
 ```
 .pull-left[
 
-```{r, echo = FALSE, out.width= 450}
+```{r, echo = FALSE, out.width= "70%"}
 knitr::include_graphics("img/gain.png")
 ```
 
@@ -428,7 +426,7 @@ log_loss(y, y_pred)
 
 ```
 
-> NOTA: Cuando lo más importante en el modelo es acertar lo mejor posible a la probabilidad entonces esta métrica puede ser de gran importancia ya que penaliza entre mayor incertidumbre probabilística exista.
+> NOTA: Cuando lo más importante en el modelo es acertar lo mejor posible a la probabilidad, entonces esta métrica puede ser de gran importancia ya que penaliza entre mayor incertidumbre probabilística exista.
 Esta métrica es comparativa y entre menos sea, menor será el error.
 
 

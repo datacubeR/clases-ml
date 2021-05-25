@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Validación Cruzada<br> en `Scikit-Learn` </span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>30-09-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>27-05-2020</span> </span> '
+date: '`r icon::fontawesome("github")` [github.com/datacubeR/clases-ml/Slides](https://github.com/datacubeR/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -100,7 +100,6 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_s
 
 .left-column[
 
-
 **Pros**: 
 * Mecanismo mucho más robusto para validar.
 * Todas las muestras se usan en entrenamiento k-1 veces y una vez de validación.
@@ -110,13 +109,13 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_s
 * Más costoso computacionalmente
 * Mayores tiempos de entrenamiento
 
-> NOTA: Si bien el valor de K podría ser un parametro tuneable, K = 5 o 10 son los valores mayormente utilizados.
+> NOTA: Normalmente K = 5 o 10 son los valores mayormente utilizados.
 
 ]
 
 .right-column[
 
-```{r, echo = FALSE, out.width = 600}
+```{r, echo = FALSE, out.width = "70%"}
 knitr::include_graphics("img/k-fold.png")
 ```
 
@@ -131,7 +130,7 @@ knitr::include_graphics("img/k-fold.png")
 .center[
 
 \* Esquema adaptado del sitio oficial de `Scikit-Learn`
-```{r, echo = FALSE, out.width = 700}
+```{r, echo = FALSE, out.width = "55%"}
 knitr::include_graphics("img/cv-schema.png")
 ```
 
@@ -139,13 +138,9 @@ knitr::include_graphics("img/cv-schema.png")
 
 > NOTA: **Cross Validation** indica qué modelo usar mientras que el **evaluar en el Test Set** indica qué tan bueno es el modelo elegido.
 
-
-
 ---
 
 # GridSearchCV / Implementación por Fuerza Bruta
-
-Los procedimientos anteriormente mostrados se encuentran completamente automatizados en `Scikit-Learn` a través de `GridSearchCV`.
 
 `GridSearchCV` es un meta-estimator, es decir, un Estimator que toma como argumento otro Estimator, por lo tanto hereda las propiedades del Estimator inicial tales como: `.fit()`, `.predict()`, etc.
 
@@ -173,7 +168,7 @@ print('Mejor Score en el Test Set:', search.score(X_test, y_test)) # en el model
 
 ---
 
-# GridSearchCV / Implementación por Fuerza Bruta
+# GridSearchCV / Fuerza Bruta
 
 ```{python, eval = FALSE}
 search.cv_results_
@@ -230,7 +225,7 @@ ShuffleSplit(n_splits = 5)
 ```
 ---
 
-# GridSearchCV / Implementación por Fuerza Bruta
+# GridSearchCV / Fuerza Bruta
 
 * **RepeatedKFold**: Corresponde a un procedimiento que se repite N veces. Entre cada repetición la data se revuelve aleatoriamente. Es uno de los procedimientos más robustos.
 
@@ -263,7 +258,7 @@ from sklearn.model_selection import RandomizedSearchCV
 RandomizedSearchCV(knn, params, n_iter = 10, random_state = 123, n_jobs = -1, cv = 5)
 ```
 
-> Existe otro tipo de optimización llamada `Optimización Bayesiana`, la cual elige el siguiente set de hiperparámetros a probar dependiendo de los resultados de la iteración anterior. Para aprender más al respecto ver [acá](https://scikit-optimize.github.io/stable/).
+> Existe otro tipo de optimización llamada `Optimización Bayesiana`, la cual elige el siguiente set de hiperparámetros a probar dependiendo de los resultados de la iteración anterior. Para aprender más al respecto ver [acá](https://optuna.org/).
 
 ---
 

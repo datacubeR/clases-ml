@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>Validación Cruzada  en Scikit-Learn </title>
+    <title>Validación Cruzada  en Scikit-Learn</title>
     <meta charset="utf-8" />
-    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 30-09-2020 " />
-    <script src="libs/header-attrs/header-attrs.js"></script>
-    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 27-05-2020" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -13,8 +11,8 @@
 class: center, middle, inverse, title-slide
 
 # <span id="title-text">Validación Cruzada<br> en <code>Scikit-Learn</code> </span>
-### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>30-09-2020</span> </span>
-### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>27-05-2020</span> </span>
+### <svg viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg" style="height:1em;fill:currentColor;position:relative;display:inline-block;top:.1em;"> [ comment ] <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <a href="https://github.com/datacubeR/clases-ml/tree/master/Slides">github.com/datacubeR/clases-ml/Slides</a>
 
 ---
 
@@ -84,7 +82,6 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_s
 
 .left-column[
 
-
 **Pros**: 
 * Mecanismo mucho más robusto para validar.
 * Todas las muestras se usan en entrenamiento k-1 veces y una vez de validación.
@@ -94,13 +91,13 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_s
 * Más costoso computacionalmente
 * Mayores tiempos de entrenamiento
 
-&gt; NOTA: Si bien el valor de K podría ser un parametro tuneable, K = 5 o 10 son los valores mayormente utilizados.
+&gt; NOTA: Normalmente K = 5 o 10 son los valores mayormente utilizados.
 
 ]
 
 .right-column[
 
-&lt;img src="img/k-fold.png" width="600" /&gt;
+&lt;img src="img/k-fold.png" width="70%" /&gt;
 
 \* Imágen obtenida del sitio oficial de `Scikit-Learn`.
 
@@ -113,19 +110,15 @@ X_train, X_val, y_train, y_val = train_test_split(X_trainval, y_trainval, test_s
 .center[
 
 \* Esquema adaptado del sitio oficial de `Scikit-Learn`
-&lt;img src="img/cv-schema.png" width="700" /&gt;
+&lt;img src="img/cv-schema.png" width="55%" /&gt;
 
 ]
 
 &gt; NOTA: **Cross Validation** indica qué modelo usar mientras que el **evaluar en el Test Set** indica qué tan bueno es el modelo elegido.
 
-
-
 ---
 
 # GridSearchCV / Implementación por Fuerza Bruta
-
-Los procedimientos anteriormente mostrados se encuentran completamente automatizados en `Scikit-Learn` a través de `GridSearchCV`.
 
 `GridSearchCV` es un meta-estimator, es decir, un Estimator que toma como argumento otro Estimator, por lo tanto hereda las propiedades del Estimator inicial tales como: `.fit()`, `.predict()`, etc.
 
@@ -153,13 +146,13 @@ print('Mejor Score en el Test Set:', search.score(X_test, y_test)) # en el model
 
 ---
 
-# GridSearchCV / Implementación por Fuerza Bruta
+# GridSearchCV / Fuerza Bruta
 
 
 ```python
 search.cv_results_
 ```
-&lt;img src="img/cv_results.png" width="2305" /&gt;
+![](img/cv_results.png)&lt;!-- --&gt;
 
 .pull-left[
 
@@ -168,7 +161,7 @@ search
 ```
 .center[
 
-&lt;img src="img/GCV.png" width="288" /&gt;
+![](img/GCV.png)&lt;!-- --&gt;
 
 ]
 ]
@@ -180,7 +173,7 @@ search.best_estimator_
 ```
 .center[
 
-&lt;img src="img/knn.png" width="469" /&gt;
+![](img/knn.png)&lt;!-- --&gt;
 
 ]
 ]
@@ -210,7 +203,7 @@ ShuffleSplit(n_splits = 5)
 ```
 ---
 
-# GridSearchCV / Implementación por Fuerza Bruta
+# GridSearchCV / Fuerza Bruta
 
 * **RepeatedKFold**: Corresponde a un procedimiento que se repite N veces. Entre cada repetición la data se revuelve aleatoriamente. Es uno de los procedimientos más robustos.
 
@@ -246,7 +239,7 @@ from sklearn.model_selection import RandomizedSearchCV
 RandomizedSearchCV(knn, params, n_iter = 10, random_state = 123, n_jobs = -1, cv = 5)
 ```
 
-&gt; Existe otro tipo de optimización llamada `Optimización Bayesiana`, la cual elige el siguiente set de hiperparámetros a probar dependiendo de los resultados de la iteración anterior. Para aprender más al respecto ver [acá](https://scikit-optimize.github.io/stable/).
+&gt; Existe otro tipo de optimización llamada `Optimización Bayesiana`, la cual elige el siguiente set de hiperparámetros a probar dependiendo de los resultados de la iteración anterior. Para aprender más al respecto ver [acá](https://optuna.org/).
 
 ---
 
@@ -303,7 +296,6 @@ class: inverse, center, middle
 Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International
 License&lt;/a&gt;.
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -352,6 +344,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -369,17 +387,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {
