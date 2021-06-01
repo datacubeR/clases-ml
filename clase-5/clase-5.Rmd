@@ -1,7 +1,7 @@
 ---
 title: '<span id = "title-text">Reducción de Dimensionalidad<br> en `Scikit-Learn` </span>'
-author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>05-10-2020</span> </span> '
-date: '`r icon::fa("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
+author: '<span> <span id = "name" >Alfonso Tobar Arancibia </span> <br><span style = "font-size: 75%;">Data Scientist<br>01-06-2021</span> </span> '
+date: '`r icon::fontawesome("github")` [github.com/Rcubes/clases-ml/Slides](https://github.com/Rcubes/clases-ml/tree/master/Slides)'
 
 output:
   xaringan::moon_reader:
@@ -39,7 +39,7 @@ solarized_light(
 
 El proceso de Modelamiento suele ser un proceso tedioso de mucho costo computacional. En estricto rigor un modelo entre más data para aprender tenga mucho mejor desempeño tendrá. El problema de eso es que eso conlleva un costo.
 
-> Por lo tanto, se hace necesario tratar de reducir en lo posible el tamaño de mi procesamiento afectando el modelo lo menos posible.
+> Es necesario reducir el tamaño de mi procesamiento afectando el modelo lo menos posible.
 
 ]
 
@@ -80,7 +80,7 @@ pero existen algunas condiciones que deben verificarse antes:
 .pull-right[
 
 ```{r, echo = FALSE, out.width = 600}
-knitr::include_graphics("img/AF.PNG")
+knitr::include_graphics("img/AF.png")
 ```
 
 
@@ -111,10 +111,7 @@ kmo_all,kmo_model=calculate_kmo(X)
 print(kmo_model) # corresponde al valor total del modelo
 print(kmo_all) # corresponde al kmo por variable
 ```
-.footnote[
 
-Fuente: Docs [`factor_amalizer`](https://factor-analyzer.readthedocs.io/en/latest/factor_analyzer.html#factor-analyzer-analyze-module)
-]
 
 ---
 
@@ -127,7 +124,7 @@ Para encontrar el número óptimo se realiza un análisis de los valores propios
 .center[
 
 ```{r, echo = FALSE}
-knitr::include_graphics("img/skree.PNG")
+knitr::include_graphics("img/skree.png")
 ```
 ]
 
@@ -178,7 +175,7 @@ Hiperparámetro:
 
 Muchas veces los datasets que se manejan tienen tantas dimensiones que no es posible visualizarlos en las dimensiones que como humanos podemos interpretar. Es por esto que reduciendo por ejemplo a 2 dimensiones podemos fácilmente ver cómo se separan datasets famosos como el iris.
 
-.left-column[
+.pull-left[
 
 ```{python, eval = FALSE}
 
@@ -199,10 +196,10 @@ plt.show()
 
 ]
 
-.right-column[
+.pull-right[
 
 ```{r, echo = FALSE}
-knitr::include_graphics("img/iris.PNG")
+knitr::include_graphics("img/iris.png")
 ```
 
 ]
