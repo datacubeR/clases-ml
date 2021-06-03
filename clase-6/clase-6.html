@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>Pipelines  en Scikit-Learn </title>
+    <title>Pipelines  en Scikit-Learn</title>
     <meta charset="utf-8" />
-    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 05-10-2020 " />
-    <script src="libs/header-attrs/header-attrs.js"></script>
-    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <meta name="author" content=" Alfonso Tobar Arancibia   Data Scientist 03-06-2021" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -13,8 +11,8 @@
 class: center, middle, inverse, title-slide
 
 # <span id="title-text">Pipelines<br> en <code>Scikit-Learn</code> </span>
-### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>05-10-2020</span> </span>
-### <i class="fab  fa-github "></i> <a href="https://github.com/Rcubes/clases-ml/tree/master/Slides">github.com/Rcubes/clases-ml/Slides</a>
+### <span> <span id="name">Alfonso Tobar Arancibia </span> <br><span style="font-size: 75%;">Data Scientist<br>03-06-2021</span> </span>
+### <svg viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg" style="height:1em;fill:currentColor;position:relative;display:inline-block;top:.1em;"> [ comment ] <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> <a href="https://github.com/datacubeR/clases-ml/tree/master/Slides">github.com/datacubeR/clases-ml/Slides</a>
 
 ---
 
@@ -24,13 +22,106 @@ class: center, middle, inverse, title-slide
 
 
 
+# Tratamiento de Nulos
+
+Normalmente existen dos tipos de Nulos, los informativos y los MAR (missing at Random). Los informativos pueden ser útiles se pueden utilizar como una variable nueva. En cambio los valores MAR son por errores de proceso, no disponibilidad de información, etc.
+
+La librería `feature-engine` ofrece una gran cantidad de alternativas para poder lidiar con imputaciones siguiendo la API de Scikit-Learn:
+
+* MeanMedianImputer: Permite imputar mediante Mediana o Media.
+* ArbitraryNumberImputer: Permite imputar de manera numérica cualquier valor arbitrario.
+* DropMissingData: En el caso de no querer imputar es posible eliminar filas con valores nulos.
+* AddMissingIndicator: Permite dejar constancia de que hay nulos. Esta estrategia puede ser particularmente útiles para algunos modelos.
+* CategoricalImputer: Permite imputar una categoría mediante la Moda o con un indicador de *Missing*.
+
+
+
+```python
+from feature_engine.imputation import MeanMedianImputer
+from feature_engine.imputation import ArbitraryNumberImputer
+from feature_engine.imputation import DropMissingData
+from feature_engine.imputation import AddMissingIndicator
+from feature_engine.imputation import CategoricalImputer
+```
+&gt; Nota: Scikit-Learn Posee estrategias propias de Imputación que se pueden encontrar en `sklearn.impute`. Para este curso usaremos esta librería que ofrece mayor flexibilidad.
+   
+---
+
+# Imputación en Categorías
+
+* CategoricalImputer es capaz de lidiar con variables nulos e categorías. 
+* Esta clase posee dos metodos de imputación:
+  * 'frequent' permite imputar por el valor más frecuente, es decir, la moda.
+  * 'missing' permite agregar una categoría extra que representa un valor perdido.
+
+
+```python
+from feature_engine.imputation import CategoricalImputer
+ci = CategoricalImputer(imputation_method = 'frequent')
+ci.fit_transform(X_train)
+```
+
+* Incluye un parámetro llamado `fill_value` que corresponde al valor con el que se rellenará el indicador de missing.
+* Finalmente el parámetro `variable`, permite escoger las variables a las cuales aplicar esta imputación. Por defecto se aplicará a todas las variables tipo Object.
+---
+
+# Inputación Numérica
+
+En el caso de querer imputar números hay bastante más opciones:
+
+* Primero imputar valores arbitrarios. Esto es útil cuando se quiere imputar 0 por no contener información o para modelos de árboles valores extremos como -1, 999, etc.
+
+
+```python
+an = ArbitraryNumberImputer(imputer_dict = {'Age' : 999})
+an.fit_transform(X_train)
+```
+* `imputer_dict` corresponderá a un diccionario en el que se incluirá el nombre de la variable con el valor a imputar.
+
+Otra estrategia bien común es imputar con Mediana o Media:
+
+```python
+an = MeanMedianImputer(imputation_method = 'median')
+an.fit_transform(X_train)
+```
+* `imputation_method` corresponderá al tipo de imputación a realizar que puede ser **'mean'** o **'median'**.
+
+Ambos métodos también incluyen el parámetro `variable` para definir en qué variables se quiere realizar este procedimiento.
+
+&gt; Utilizar Media o Mediana permite mantener la distribución de los datos pero añadiendo una mayor concentración al centro de masa de la distribución.
+
+---
+
+# Última Opción: Eliminar Datos
+
+Hay veces que imputar datos no es una opción, la principal opción acá es cuando no vale la pena imputar. Algunos casos:
+* Filas completas sin datos. 
+* Columnas Completas sin Datos
+
+Cuando existe una variable que tiene una gran cantidad de nulos, es mejor eliminarla del modelo, ya que no aporta información relevante para las observaciones.
+
+Cuando existan algunas filas con nulos, eliminarlo es una opción en el entrenamiento, pero no en el proceso de inferencia. Por lo tanto hay que ser cuidadoso acá:
+
+
+```python
+dm = DropMissingData(missing_only = False) 
+dm.fit_transform(X_train).shape
+```
+
+---
+
 # Pipelines
 
-Trabajar con modelos de Machine Learning muchas veces requiere la combinación de muchos pasos que sean reproducibles tanto para el proceso de Entrenamiento como de Testeo/Validación. Es por eso que se necesita de una estructura robusta que soporte esto de manera estable.
+Trabajar con modelos de Machine Learning requiere de la combinación de muchos pasos: Preprocesamiento, Encoding, Estandarización, Selección de Variables, Reducción de Dimensionalidad, etc.
 
+Esto puede complicar nuestro proceso de modelamiento, en especial en el proceso de Inferencia, generando que sea dificil de reproducir en un ambiente productivo.
+
+Además es importante destacar que en caso de utilizar estrategias complejas de validación como lo es el K-Fold, hay una capa adicional de complejidad para evitar problemas de Data Leakage.
+
+Para ello se introducen los Pipelines:
 
 .center[
-&lt;img src="img/pipeline.PNG" width="60%" /&gt;
+&lt;img src="img/pipeline.PNG" width="45%" /&gt;
 
 ]
 
@@ -41,146 +132,71 @@ Trabajar con modelos de Machine Learning muchas veces requiere la combinación d
 
 ```python
 from sklearn.pipeline import Pipeline
-from category_encoders import OneHotEncoder
-from sklearn.feature_selection import SelectPercentile, mutual_info_classif
-from sklearn.model_selection import LogisticRegression
-
-
-
 pipe = Pipeline(steps = [
-  ('ohe', OneHotEncoder(use_cat_names = True))
-  ('vs', SelectPercentile(mutual_info_clasif, percentile = 70)),
-  ('lr', LogisticRegression(random_state = 123))
+    ('imp_cat', CategoricalImputer(imputation_method = 'frequent')),
+    ('n_imputer', MeanMedianImputer(imputation_method = 'median')),
+    ('ohe', OneHotEncoder())
 ])
-
-pipe.fit(X_train, y_train)
 ```
 
-&gt; NOTA: `pipe` ahora es un modelo, pero de muchas etapas. Esta es la manera correcta de trabajar en `scikit-learn` cuando se está en el proceso de entrenamiento/experimentación de un modelo.
-Todos los pasos pueden ser `Transformers`, pero sólo el último paso puede ser un `Estimator`.
+En este caso, se llevarán a cabo 3 procedimientos. 
+
+1. Imputación categórica, utilizando estrategia **'frequent'**,
+2. Inputación numérica utilizando **'median'**. 
+3. OneHotEncoder para transformar variables categóricas en Dummies.
+
+Los únicos requisitos que tiene un Pipeline:
+
+* Se pueden utilizar cuantos steps se requieran, 
+* Pueden haber cuantos transformers se requieran,
+* Puede haber como máximo un Estimator y este tiene que ir al final del Pipeline.
+
+El Pipeline se comportará de acuerdo a su último step:
+* Tendrá `fit()`, `transform()` o `fit_transform()` si finaliza en un Transform.
+* Tendrá `fit()`, `predict()` y `score()` en el caso de terminar con un Estimator.
 
 ---
 
-# Tratamiento de Nulos
+# Combinando Pipelines con GridSearchCV
 
-Normalmente existen dos tipos de Nulos, los informativos y los MAR (missing at Random). Los informativos pueden ser útiles y quizás se pueden utilizar como una variable nueva. En cambio los valores MAR son por errores de proceso, no disponibilidad de información, etc.
-
-Una estrategia simple en `scikit-learn` es utilizar `SimpleImputer()`:
+Es común utilizar Pipelines realizar estrategias de Cross Validation ya que utilizar CV complica el proceso de entrenamiento, en especial, si se quiere evitar el Data Leakage. 
 
 
 ```python
-from sklearn.imputer import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import LinerRegression
-
-num = Pipeline(steps = [
-  ('imp_num', SimpleImputer(strategy = 'mean')),
-  ('sc', StandardScaler()),
-  ('lr', LinearRegression())
+pipe_knn_cv = Pipeline(steps = [
+    ('imp_cat', CategoricalImputer(imputation_method = 'frequent')),
+    ('n_imputer', MeanMedianImputer(imputation_method = 'mean')),
+    ('ohe', OneHotEncoder(drop_last = True)),
+    ('sc', StandardScaler()),
+    ('knn', KNeighborsClassifier())
 ])
-```
 
-* strategy: Corresponde a la estrategia de imputación numérica disponible:
-   * **'mean'**: Rellena con la media de cada columna.
-   * **'median'**: Rellena con la mediana de cada columna.
-   * **'most_frequent'**: Rellena con el valor más frecuenta. Normalmente utilizado con categorías.
-   * **'constant'**: Reemplaza con un valor dado. Se debe agregar el parámetro adicional 'fill_value' con el valor a rellenar.
-   
+params = {'imp_cat__imputation_method': ['frequent','missing'],
+         'n_imputer__imputation_method': ['mean','median'],
+         'sc': [StandardScaler(), 'passthrough'],
+         'knn__n_neighbors': np.arange(5,25,2)} 
+
+search = GridSearchCV(pipe_knn_cv, params, cv = 5, scoring = 'accuracy', 
+                      n_jobs = -1, verbose = 10, return_train_score = True)
+                      
+search.fit(X_train, y_train)
+```
 ---
 
-# Tratamiento de Nulos en Categorías
-
-* La librería `category_encoders` es capaz de lidiar con variables nulos. Normalmente crear estrategias que le permitan manejar los valores nulos de manera autónoma.
-
-* Además le permite lidiar con categorías no vistas durante el entrenamiento
-
-* Puede crear categorías nuevas para los valores nulos.
-
-* Podría no necesitar un proceso de Imputer ya que la librería se encarga.
-
-
-```python
-cat = Pipeline(steps = [
-  ('ohe', OneHotEncoder(use_cat_names = True))
-  ('lr', LinearRegression())
-])
-```
-
----
-
-# Y qué pasa si quiero tratar categorías y números de manera distinta?
-
-Existe el `ColumnTransformer()` que es un meta-estimator que ayuda a realizar procedimiento diferenciado a distintos sets de variables.
-
-
-```python
-from sklearn.compose import ColumnTransformer
-prep = ColumnTransformer(trasformers = [
-  ('cont', num_pipeline, var_num),
-  ('cat', cat_pipeline, var_cat)
-])
-```
+# Combinando Pipelines con GridSearchCV
 
 .center[
-
-&lt;img src="img/column_transformer.PNG" width="60%" /&gt;
+&lt;img src="img/pipeline_sk.png" width="40%" /&gt;
 
 ]
 
+GridSearchCV + Pipelines permite realizar búsquedas mucho más exhaustivas de la siguiente forma:
 
-
-
----
-
-# Manipulando Pipelines
-
-## Accediendo a valores Internos.
-
-Cuando queremos recuperar atributos de etapas intermedias de un Pipeline necesitamos acceder a él utilizando `.named_steps.etapa_del_pipeline`. Donde `etapa_del_pipeline` es el nombre que nosotros asignamos a las distintas etapas de un Pipeline. Estas propiedades están disponibles sólo después de **fitear** el modelo.
-
-
-```python
-num = Pipeline(steps = [
-  ('imp_num', SimpleImputer(strategy = 'mean')),
-  ('sc', StandardScaler()),
-  ('lr', LinearRegression())
-])
-
-# permite llamar los coeficientes que entrega
-# una lr dentro de un pipeline.
-num.named_steps.lr.coef_ 
-```
-
-&gt; NOTA: Cuando queremos ingresar a una etapa de un ColumnTransformer se debe utilizar `.named_transformers_`.
+* Parámetros: Utilizando la convención `nombre_etapa__parametro`: Donde `nombre_etapa` corresponde al nombre entragado en el pipeline y `parametro` es el nombre del parámetro del Transformer/Estimator. Cabe destacar que se debe separar por dos underscores: *__*.
+* Distintos Transformers/Estimators: En el caso de querer probar muchas combinaciones de Transformers/Estimators se pueden coloca en una lista aludiendo al nombre de la etapa.
+* Saltar Pasos: Utilizando la palabra **'passthrough'** es posible desactivar alguno de los pasos del Pipeline.
 
 ---
-
-# Manipulando Pipelines
-
-## Qué pasa con el GridSearch?
-
-La convención de `Scikit-Learn` para acceder hiperparámetros de un Pipeline es utilizando el nombre de la etapa y luego un doble underscore para el nombre del hipeparámetro.
-
-Adicionalmente existe el comando `'passthrough'` que permite saltarse la etapa. 
-
-&gt; NOTA: Usar con cuidado ya que puede fallar si me salto una etapa que tiene hiperparámetros en búsqueda.
-
-
-```python
-num = Pipeline(steps = [
-  ('imp_num', SimpleImputer(strategy = 'mean')),
-  ('sc', StandardScaler()),
-  ('lr', LinearRegression())
-])
-
-params = {'imp_num__strategy': ['mean', 'median'], # prueba dos estrategias de imputación
-          'sc': ['passthrough', StandardScaler()]} # va a probar con y sin estandarización
-          
-GridSearchCV(num, params, cv = 5, scoring = 'accuracy', n_jobs = -1)
-```
-
----
-
 
 class: inverse, center, middle
 
@@ -189,15 +205,6 @@ class: inverse, center, middle
 Tobar&lt;/span&gt; y están licenciadas bajo &lt;a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"&gt;Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International
 License&lt;/a&gt;.
-
-
-
-
-
-
-
-
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -246,6 +253,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -263,17 +296,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {
